@@ -1,0 +1,97 @@
+/* Gift Message Admin Styles */
+
+/* Orders list table */
+.wp-list-table .column-gift_message {
+    width: 150px;
+}
+
+.wp-list-table .column-gift_message .na {
+    color: #999;
+    font-style: italic;
+}
+
+.wp-list-table .column-gift_message div {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.wp-list-table .column-gift_message div:hover {
+    overflow: visible;
+    white-space: normal;
+    background: #f9f9f9;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 999;
+}
+
+/* Order details page */
+.woocommerce_order_items .gift-message-display {
+    margin: 5px 0;
+    padding: 8px;
+    background: #f8f9fa;
+    border-left: 3px solid #0073aa;
+    font-size: 13px;
+    border-radius: 3px;
+}
+
+.woocommerce_order_items .gift-message-display strong {
+    color: #333;
+    font-weight: 600;
+}
+
+/* Responsive design for admin */
+@media (max-width: 782px) {
+    .wp-list-table .column-gift_message {
+        width: auto;
+    }
+
+    .wp-list-table .column-gift_message div {
+        max-width: none;
+    }
+}
+
+/* Gift Message Settings Page */
+.woocommerce_page_wc-settings #gmwoo_gift_message_mode {
+    min-width: 300px;
+}
+
+.gmwoo-product-selector-row,
+.gmwoo-category-selector-row {
+    display: none;
+}
+
+.gmwoo-product-search,
+.gmwoo-category-search {
+    min-width: 350px !important;
+}
+
+/* Settings page description styling */
+.woocommerce_page_wc-settings .gmwoo-settings-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.woocommerce_page_wc-settings .gmwoo-settings-notice p {
+    margin: 0;
+    color: #856404;
+}
+
+/* Enhanced select2 styling for our fields */
+.woocommerce_page_wc-settings .select2-container--default .select2-selection--multiple {
+    border-color: #ddd;
+    min-height: 32px;
+}
+
+.woocommerce_page_wc-settings .select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}

@@ -1,0 +1,113 @@
+/* Gift Message Frontend Styles */
+.gmwoo-gift-message-wrapper {
+    margin: 20px 0;
+    padding: 0;
+}
+
+.gmwoo-gift-message-wrapper label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.gmwoo-gift-message-wrapper textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.4;
+    resize: vertical;
+    transition: border-color 0.2s ease;
+}
+
+.gmwoo-gift-message-wrapper textarea:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+.gmwoo-gift-message-counter {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.gmwoo-gift-message-counter.warning {
+    color: #d63638;
+}
+
+.gmwoo-gift-message-display {
+    margin: 8px 0;
+    padding: 8px;
+    background: #f9f9f9;
+    border-left: 3px solid #0073aa;
+    font-size: 14px;
+}
+
+.gmwoo-gift-message-display strong {
+    color: #333;
+}
+
+/* Cart and checkout styles */
+.woocommerce-cart .gmwoo-gift-message-display,
+.woocommerce-checkout .gmwoo-gift-message-display {
+    margin: 5px 0;
+    padding: 5px 8px;
+    background: #f8f9fa;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+/* Order details styles */
+.woocommerce-order .gmwoo-gift-message-display {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #0073aa;
+}
+
+/* My Account order view */
+.woocommerce-account .gmwoo-gift-message-display {
+    margin: 8px 0;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 3px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .gmwoo-gift-message-wrapper {
+        margin: 15px 0;
+    }
+
+    .gmwoo-gift-message-wrapper textarea {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .gmwoo-gift-message-counter {
+        font-size: 11px;
+    }
+}
+
+/* Email styles (inline styles are better for emails, but this provides fallback) */
+.gmwoo-gift-message-email {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-left: 3px solid #0073aa;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.gmwoo-gift-message-email strong {
+    color: #333333;
+    font-weight: 600;
+}
