@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="1544" height="500" viewBox="0 0 1544 500" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Background Gradient with Pattern -->
@@ -77,7 +78,7 @@
     
     <!-- Icon 2: Heart -->
     <rect x="80" y="0" width="50" height="50" rx="25" fill="white" opacity="0.15"/>
-    <path d="M105 18 C105 15, 102 13, 100 13 C98 13, 96 15, 96 18 C96 15, 94 13, 92 13 C90 13, 87 15, 87 18 Q87 23, 96 28 Q105 23, 105 18 Z" fill="white" opacity="0.8"/>
+    <path d="M115 20 C115 17, 112 15, 109 15 C107 15, 105 17, 105 20 C105 17, 103 15, 101 15 C98 15, 95 17, 95 20 Q95 27, 105 35 Q115 27, 115 20 Z" fill="white" opacity="0.8"/>
     
     <!-- Icon 3: Cart -->
     <rect x="160" y="0" width="50" height="50" rx="25" fill="white" opacity="0.15"/>

@@ -61,9 +61,10 @@
     min-width: 300px;
 }
 
+/* Product and category selector rows - visibility controlled by JavaScript */
 .gmwoo-product-selector-row,
 .gmwoo-category-selector-row {
-    display: none;
+    /* Remove the default display: none to let JavaScript handle visibility */
 }
 
 .gmwoo-product-search,

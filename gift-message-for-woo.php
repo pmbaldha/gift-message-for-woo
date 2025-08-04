@@ -92,9 +92,27 @@ class GMWoo_Gift_Message {
 		add_filter( 'woocommerce_order_item_display_meta_key', array( $this, 'remove_meta_from_order_display' ), 10, 2 );
 		add_filter( 'woocommerce_email_order_items_args', array( $this, 'display_gift_message_in_email' ) );
 
-		// Admin hooks.
-		add_filter( 'manage_shop_order_posts_columns', array( $this, 'add_gift_message_column' ) );
-		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'display_gift_message_column' ), 10, 2 );
+		// Admin hooks - Support both legacy and HPOS.
+		$use_hpos = false;
+		
+		// Check if HPOS is enabled
+		if ( class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' ) 
+			&& method_exists( wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class ), 'custom_orders_table_usage_is_enabled' ) ) {
+			$use_hpos = wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
+		}
+		
+		if ( $use_hpos ) {
+			// HPOS is enabled - use new hooks
+			add_filter( 'manage_woocommerce_page_wc-orders_columns', array( $this, 'add_gift_message_column' ) );
+			add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'display_gift_message_column_hpos' ), 10, 2 );
+		} else {
+			// Legacy mode - use old hooks
+			add_filter( 'manage_shop_order_posts_columns', array( $this, 'add_gift_message_column' ) );
+			add_action( 'manage_shop_order_posts_custom_column', array( $this, 'display_gift_message_column' ), 10, 2 );
+		}
+
+		// Plugin action links.
+		add_filter( 'plugin_action_links_' . plugin_basename( GMWOO_PLUGIN_FILE ), array( $this, 'add_plugin_action_links' ) );
 
 		// Scripts and styles.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -253,7 +271,7 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Display gift message column content
+	 * Display gift message column content (Legacy orders)
 	 *
 	 * @param string $column Column name.
 	 * @param int    $post_id Product id.
@@ -266,21 +284,46 @@ class GMWoo_Gift_Message {
 				return;
 			}
 
-			$has_gift_message = false;
+			$this->render_gift_message_column( $order );
+		}
+	}
 
-			foreach ( $order->get_items() as $item ) {
-				$gift_message = $item->get_meta( 'gmwoo_gift_message' );
-
-				if ( ! empty( $gift_message ) ) {
-					$has_gift_message = true;
-					$truncated        = strlen( $gift_message ) > 30 ? substr( $gift_message, 0, 30 ) . '...' : $gift_message;
-					echo '<div title="' . esc_attr( $gift_message ) . '">' . esc_html( $truncated ) . '</div>';
-				}
+	/**
+	 * Display gift message column content (HPOS)
+	 *
+	 * @param string   $column Column name.
+	 * @param WC_Order $order Order object.
+	 */
+	public function display_gift_message_column_hpos( $column, $order ) {
+		if ( 'gmwoo_gift_message' === $column ) {
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				return;
 			}
 
-			if ( ! $has_gift_message ) {
-				echo '<span class="na">–</span>';
+			$this->render_gift_message_column( $order );
+		}
+	}
+
+	/**
+	 * Render gift message column content
+	 *
+	 * @param WC_Order $order Order object.
+	 */
+	private function render_gift_message_column( $order ) {
+		$has_gift_message = false;
+
+		foreach ( $order->get_items() as $item ) {
+			$gift_message = $item->get_meta( 'gmwoo_gift_message' );
+
+			if ( ! empty( $gift_message ) ) {
+				$has_gift_message = true;
+				$truncated        = strlen( $gift_message ) > 30 ? substr( $gift_message, 0, 30 ) . '...' : $gift_message;
+				echo '<div title="' . esc_attr( $gift_message ) . '">' . esc_html( $truncated ) . '</div>';
 			}
+		}
+
+		if ( ! $has_gift_message ) {
+			echo '<span class="na">–</span>';
 		}
 	}
 
@@ -312,7 +355,18 @@ class GMWoo_Gift_Message {
 	 * @param string $hook The current admin page hook suffix.
 	 */
 	public function enqueue_admin_scripts( $hook ) {
-		if ( 'edit.php' === $hook && 'shop_order' === get_post_type() ) {
+		// Legacy orders page
+		if ( 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'shop_order' === $_GET['post_type'] ) {
+			wp_enqueue_style(
+				'gift-message-admin',
+				GMWOO_PLUGIN_URL . 'assets/css/admin.css',
+				array(),
+				GMWOO_VERSION
+			);
+		}
+		
+		// HPOS orders page
+		if ( 'woocommerce_page_wc-orders' === $hook ) {
 			wp_enqueue_style(
 				'gift-message-admin',
 				GMWOO_PLUGIN_URL . 'assets/css/admin.css',
@@ -368,6 +422,18 @@ class GMWoo_Gift_Message {
 				return true;
 		}
 	}
+
+	/**
+	 * Add settings link to plugin actions.
+	 *
+	 * @param array $links Plugin action links.
+	 * @return array Modified plugin action links.
+	 */
+	public function add_plugin_action_links( $links ) {
+		$settings_link = '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=gift_message' ) . '">' . __( 'Settings', 'gift-message-for-woo' ) . '</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
+	}
 }
 
 
@@ -378,3 +444,10 @@ add_action(
 		new GMWoo_Gift_Message();
 	}
 );
+
+// Declare HPOS compatibility
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
