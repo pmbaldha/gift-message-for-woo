@@ -1,0 +1,10 @@
+Placeholder for Screenshot 6: Gift message analytics dashboard
+
+This screenshot should show:
+- Custom analytics dashboard page
+- Charts/graphs showing gift message usage trends
+- Statistics (total messages, popular occasions, etc.)
+- Date range filters
+- Export options
+
+Recommended dimensions: 1280x800px or 772x418px

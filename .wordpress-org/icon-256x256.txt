@@ -1,0 +1,26 @@
+WordPress.org Plugin Icon - High Resolution (256x256px)
+
+Design Requirements:
+- Dimensions: 256x256 pixels (exactly 2x the standard icon)
+- File format: PNG (with transparency) or JPG
+- File name: icon-256x256.png or icon-256x256.jpg
+- For Retina/HiDPI displays
+
+Suggested Icon Design for Gift Message for Woo:
+- Same design as 128x128 icon but higher resolution
+- More detailed version with refined edges
+
+Enhanced Details for High Resolution:
+- Subtle shadows and depth
+- Refined ribbon texture
+- Crisp message tag edges
+- Smooth gradient transitions
+- Anti-aliased curves
+
+Optional SVG Elements:
+- Gift box: Rounded corners, 3D perspective
+- Message tag: Paper texture, handwritten feel
+- Ribbon: Glossy finish, realistic fold
+- Background: Soft circle or square with shadow
+
+Ensure icon reads well at all sizes from 16x16 to 256x256

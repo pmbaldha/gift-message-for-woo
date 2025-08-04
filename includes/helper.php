@@ -12,8 +12,8 @@
  *
  * @return string|null The gift message if set, otherwise null.
  */
-function gmwoo_get_gift_message_from_order_item($item ) {
-	return $item->get_meta( 'gift_message' );
+function gmwoo_get_gift_message_from_order_item( $item ) {
+	return $item->get_meta( 'gmwoo_gift_message' );
 }
 
 /**
@@ -23,7 +23,7 @@ function gmwoo_get_gift_message_from_order_item($item ) {
  *
  * @return bool True if a gift message exists, false otherwise.
  */
-function gmwoo_has_gift_message($item ) {
+function gmwoo_has_gift_message( $item ) {
 	$gift_message = gmwoo_get_gift_message_from_order_item( $item );
 	return ! empty( $gift_message );
 }

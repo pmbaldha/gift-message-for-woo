@@ -1,0 +1,9 @@
+Placeholder for Screenshot 2: Gift message display in cart with item details
+
+This screenshot should show:
+- WooCommerce cart page
+- Product with gift message displayed below product name
+- Clear formatting of the gift message
+- Edit/remove options if applicable
+
+Recommended dimensions: 1280x800px or 772x418px

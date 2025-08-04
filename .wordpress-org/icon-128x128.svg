@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="64" cy="64" r="60" fill="#7F54B3" opacity="0.1"/>
+  
+  <!-- Gift Box Base -->
+  <rect x="32" y="52" width="64" height="48" rx="4" fill="#7F54B3"/>
+  
+  <!-- Gift Box Lid -->
+  <rect x="28" y="44" width="72" height="12" rx="2" fill="#9B6FD3"/>
+  
+  <!-- Ribbon Vertical -->
+  <rect x="58" y="44" width="12" height="56" fill="#FFD700"/>
+  
+  <!-- Ribbon Horizontal -->
+  <rect x="28" y="48" width="72" height="8" fill="#FFD700"/>
+  
+  <!-- Ribbon Bow Left -->
+  <ellipse cx="54" cy="42" rx="12" ry="8" fill="#FFD700"/>
+  
+  <!-- Ribbon Bow Right -->
+  <ellipse cx="74" cy="42" rx="12" ry="8" fill="#FFD700"/>
+  
+  <!-- Ribbon Bow Center -->
+  <circle cx="64" cy="42" r="6" fill="#FFC700"/>
+  
+  <!-- Message Tag -->
+  <g transform="translate(75, 65)">
+    <!-- Tag Shape -->
+    <path d="M0 0 L30 0 L30 20 L5 20 L0 15 Z" fill="white" stroke="#7F54B3" stroke-width="2"/>
+    <!-- Tag Hole -->
+    <circle cx="6" cy="10" r="2" fill="#7F54B3"/>
+    <!-- Message Lines -->
+    <line x1="10" y1="7" x2="25" y2="7" stroke="#7F54B3" stroke-width="1.5"/>
+    <line x1="10" y1="13" x2="22" y2="13" stroke="#7F54B3" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Small Hearts -->
+  <g opacity="0.3">
+    <path d="M20 30 C20 27, 17 25, 15 25 C13 25, 11 27, 11 30 C11 27, 9 25, 7 25 C5 25, 2 27, 2 30 Q2 35, 11 40 Q20 35, 20 30 Z" fill="#FF69B4"/>
+    <path d="M110 88 C110 85, 107 83, 105 83 C103 83, 101 85, 101 88 C101 85, 99 83, 97 83 C95 83, 92 85, 92 88 Q92 93, 101 98 Q110 93, 110 88 Z" fill="#FF69B4"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+Placeholder for Screenshot 5: Gift message display in admin order details
+
+This screenshot should show:
+- Individual order edit page in admin
+- Gift Message meta box or section
+- Full gift message text displayed
+- Clear labeling and formatting
+
+Recommended dimensions: 1280x800px or 772x418px

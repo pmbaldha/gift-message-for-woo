@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="772" height="250" viewBox="0 0 772 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Gradient -->
+  <defs>
+    <linearGradient id="bannerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9B6FD3" />
+      <stop offset="100%" style="stop-color:#7F54B3" />
+    </linearGradient>
+    <pattern id="dots" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="2" fill="white" opacity="0.1"/>
+    </pattern>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="772" height="250" fill="url(#bannerBg)"/>
+  <rect width="772" height="250" fill="url(#dots)"/>
+  
+  <!-- Large Gift Box on Right -->
+  <g transform="translate(500, 80)">
+    <!-- Box Shadow -->
+    <ellipse cx="100" cy="150" rx="80" ry="20" fill="black" opacity="0.1"/>
+    <!-- Gift Box Base -->
+    <rect x="40" y="60" width="120" height="90" rx="6" fill="#5A3B7D"/>
+    <!-- Gift Box Lid -->
+    <rect x="30" y="45" width="140" height="20" rx="4" fill="#6B4A8E"/>
+    <!-- Ribbon Vertical -->
+    <rect x="90" y="45" width="20" height="105" fill="#FFD700"/>
+    <!-- Ribbon Horizontal -->
+    <rect x="30" y="52" width="140" height="12" fill="#FFD700"/>
+    <!-- Bow -->
+    <ellipse cx="80" cy="40" rx="20" ry="12" fill="#FFD700" transform="rotate(-20 80 40)"/>
+    <ellipse cx="120" cy="40" rx="20" ry="12" fill="#FFD700" transform="rotate(20 120 40)"/>
+    <circle cx="100" cy="40" r="10" fill="#FFC700"/>
+  </g>
+  
+  <!-- Plugin Title -->
+  <text x="50" y="80" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">
+    Gift Message
+  </text>
+  <text x="50" y="130" font-family="Arial, sans-serif" font-size="36" font-weight="normal" fill="white" opacity="0.9">
+    for WooCommerce
+  </text>
+  
+  <!-- Tagline -->
+  <text x="50" y="180" font-family="Arial, sans-serif" font-size="20" fill="white" opacity="0.8">
+    Add personalized gift messages to every order
+  </text>
+  
+  <!-- Message Icons -->
+  <g transform="translate(50, 200)">
+    <!-- Message Bubble 1 -->
+    <rect x="0" y="0" width="40" height="25" rx="12" fill="white" opacity="0.2"/>
+    <circle cx="5" cy="25" r="3" fill="white" opacity="0.2"/>
+    
+    <!-- Message Bubble 2 -->
+    <rect x="60" y="5" width="35" height="20" rx="10" fill="white" opacity="0.15"/>
+    <circle cx="90" cy="25" r="2" fill="white" opacity="0.15"/>
+    
+    <!-- Message Bubble 3 -->
+    <rect x="110" y="0" width="45" height="25" rx="12" fill="white" opacity="0.1"/>
+    <circle cx="115" cy="25" r="3" fill="white" opacity="0.1"/>
+  </g>
+  
+  <!-- Floating Hearts -->
+  <g opacity="0.3">
+    <path d="M650 30 C650 24, 644 20, 640 20 C636 20, 632 24, 632 30 C632 24, 628 20, 624 20 C620 20, 614 24, 614 30 Q614 40, 632 50 Q650 40, 650 30 Z" fill="white"/>
+    <path d="M720 200 C720 194, 714 190, 710 190 C706 190, 702 194, 702 200 C702 194, 698 190, 694 190 C690 190, 684 194, 684 200 Q684 210, 702 220 Q720 210, 720 200 Z" fill="white"/>
+  </g>
+  
+  <!-- WooCommerce Indicator -->
+  <g transform="translate(680, 20)">
+    <rect x="0" y="0" width="72" height="30" rx="15" fill="white" opacity="0.2"/>
+    <text x="36" y="20" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">for Woo</text>
+  </g>
+</svg>

@@ -106,7 +106,7 @@ class GMWoo_Admin_Settings {
 				'default'           => '150',
 				'custom_attributes' => array(
 					'min'  => 1,
-					'max'  => 500,
+					'max'  => 1500,
 					'step' => 1,
 				),
 			),
@@ -199,6 +199,7 @@ class GMWoo_Admin_Settings {
 					if ( $categories ) {
 						foreach ( $categories as $category ) {
 							$selected = in_array( $category->term_id, $option_value, true ) ? 'selected="selected"' : '';
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							echo '<option value="' . esc_attr( $category->term_id ) . '" ' . $selected . '>' . esc_html( $category->name ) . '</option>';
 						}
 					}
@@ -221,7 +222,8 @@ class GMWoo_Admin_Settings {
 		}
 
 		// Only load on our settings tab.
-		if ( ! isset( $_GET['tab'] ) || 'gift_message' !== $_GET['tab'] ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! isset( $_GET['tab'] ) || 'gift_message' !== sanitize_text_field( wp_unslash( $_GET['tab'] ) ) ) {
 			return;
 		}
 

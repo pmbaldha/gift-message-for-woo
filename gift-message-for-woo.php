@@ -28,8 +28,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'GMWOO_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'GMWOO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GMWOO_VERSION', '1.0.0' );
+define( 'GMWOO_PLUGIN_FILE', __FILE__ );
 
-require_once GMWOO_PLUGIN_PATH . 'helper.php';
+// The code that runs during plugin activation.
+function gmwoo_activate() {
+	require_once GMWOO_PLUGIN_PATH . 'includes/class-gmwoo-activator.php';
+	GMWoo_Activator::activate();
+}
+
+// The code that runs during plugin deactivation.
+function gmwoo_deactivate() {
+	require_once GMWOO_PLUGIN_PATH . 'includes/class-gmwoo-deactivator.php';
+	GMWoo_Deactivator::deactivate();
+}
+
+register_activation_hook( __FILE__, 'gmwoo_activate' );
+register_deactivation_hook( __FILE__, 'gmwoo_deactivate' );
+
+require_once GMWOO_PLUGIN_PATH . 'includes/helper.php';
 
 // Include admin settings class.
 if ( is_admin() ) {
@@ -125,6 +141,7 @@ class GMWoo_Gift_Message {
 		echo '<label for="gmwoo_gift_message">' . esc_html( $field_label ) . '</label>';
 		echo '<textarea id="gmwoo_gift_message" name="gmwoo_gift_message" maxlength="' . esc_attr( $character_limit ) . '" placeholder="' . esc_attr( $field_placeholder ) . '"></textarea>';
 		echo '<div class="gmwoo-gift-message-counter"><span id="gmwoo-gift-message-count">0</span>/' . esc_html( $character_limit ) . ' ' . esc_html__( 'characters', 'gift-message-for-woo' ) . '</div>';
+		wp_nonce_field( 'gmwoo_add_gift_message', 'gmwoo_gift_message_nonce' );
 		echo '</div>';
 	}
 
@@ -134,10 +151,13 @@ class GMWoo_Gift_Message {
 	 * @param array $cart_item_data extra cart item data we want to pass into the item.
 	 */
 	public function add_gift_message_to_cart( $cart_item_data ) {
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( isset( $_POST['gmwoo_gift_message'] ) && ! empty( $_POST['gmwoo_gift_message'] ) ) {
+			// Verify nonce.
+			if ( ! isset( $_POST['gmwoo_gift_message_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gmwoo_gift_message_nonce'] ) ), 'gmwoo_add_gift_message' ) ) {
+				return $cart_item_data;
+			}
+
 			// Sanitize and validate input.
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$gift_message = sanitize_textarea_field( wp_unslash( $_POST['gmwoo_gift_message'] ) );
 
 			$character_limit = get_option( 'gmwoo_character_limit', '150' );
@@ -307,7 +327,7 @@ class GMWoo_Gift_Message {
 	 */
 	public function woocommerce_missing_notice() {
 		echo '<div class="error"><p><strong>' .
-			esc_html__( 'Gift Message for WooCommerce', 'gift-message-for-woo' ) .
+			esc_html__( 'Gift Message for Woo', 'gift-message-for-woo' ) .
 			'</strong> ' .
 			esc_html__( 'requires WooCommerce to be installed and active.', 'gift-message-for-woo' ) .
 			'</p></div>';
