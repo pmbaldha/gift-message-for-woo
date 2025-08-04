@@ -230,31 +230,22 @@ class GMWoo_Admin_Settings {
 		// Enqueue WooCommerce admin scripts for enhanced select.
 		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'woocommerce_admin_styles' );
-
-		// Add inline script to handle conditional field display.
-		wp_add_inline_script(
-			'wc-enhanced-select',
-			"
-			jQuery(document).ready(function($) {
-				function toggleGiftMessageFields() {
-					var mode = $('#gmwoo_gift_message_mode').val();
-					var productRow = $('.gmwoo-product-selector-row');
-					var categoryRow = $('.gmwoo-category-selector-row');
-					
-					productRow.hide();
-					categoryRow.hide();
-					
-					if (mode === 'specific_products' || mode === 'exclude_products') {
-						productRow.show();
-					} else if (mode === 'specific_categories' || mode === 'exclude_categories') {
-						categoryRow.show();
-					}
-				}
-				
-				$('#gmwoo_gift_message_mode').on('change', toggleGiftMessageFields);
-				toggleGiftMessageFields();
-			});
-			"
+		
+		// Enqueue our custom admin script
+		wp_enqueue_script(
+			'gmwoo-admin',
+			GMWOO_PLUGIN_URL . 'assets/js/admin.js',
+			array( 'jquery', 'wc-enhanced-select' ),
+			GMWOO_VERSION,
+			true
+		);
+		
+		// Enqueue our admin styles
+		wp_enqueue_style(
+			'gmwoo-admin',
+			GMWOO_PLUGIN_URL . 'assets/css/admin.css',
+			array( 'woocommerce_admin_styles' ),
+			GMWOO_VERSION
 		);
 	}
 }
