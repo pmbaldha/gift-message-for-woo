@@ -1,0 +1,65 @@
+# Directories
+/vendor/
+/node_modules/
+/build/
+/dist/
+/logs/
+/tmp/
+
+# Files
+*.log
+*.cache
+.DS_Store
+Thumbs.db
+*.zip
+*.tar.gz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build files
+*.map
+*.min.js
+*.min.css
+
+# WordPress
+wp-config.php
+/wordpress/
+
+# Composer
+composer.lock
+/vendor/
+
+# NPM
+package-lock.json
+npm-debug.log
+yarn.lock
+yarn-error.log
+
+# Testing
+/tests/coverage/
+phpunit.xml
+.phpunit.result.cache
+
+# Local development
+*.sql
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

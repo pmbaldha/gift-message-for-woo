@@ -1,0 +1,25 @@
+name: Deploy to WordPress.org
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  tag:
+    name: New tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build
+        run: |
+          npm install
+          npm run build
+          
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SLUG: gift-message-for-woo
+          VERSION: ${{ github.ref_name }}
+          ASSETS_DIR: .wordpress-org

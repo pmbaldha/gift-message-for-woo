@@ -1,0 +1,122 @@
+name: Deploy to WordPress.org Repository
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Plugin version to deploy'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy Plugin
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+          tools: composer, cs2pr
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Setup Composer cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        run: |
+          if [ -f "composer.json" ]; then
+            composer install --no-dev --optimize-autoloader --no-progress
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install NPM dependencies
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci --no-audit --no-fund
+          fi
+
+      - name: Build assets
+        run: |
+          if [ -f "package.json" ]; then
+            npm run build || echo "No build script found"
+          fi
+
+      - name: Create build artifact
+        run: |
+          mkdir -p build/gift-message-for-woo
+          
+          # Copy plugin files
+          rsync -av --progress \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.wordpress-org' \
+            --exclude='node_modules' \
+            --exclude='.gitignore' \
+            --exclude='.editorconfig' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='package.json' \
+            --exclude='package-lock.json' \
+            --exclude='*.zip' \
+            --exclude='build' \
+            --exclude='tests' \
+            --exclude='bin' \
+            --exclude='.phpcs.xml' \
+            --exclude='phpunit.xml' \
+            --exclude='*.md' \
+            --exclude='.DS_Store' \
+            --exclude='Thumbs.db' \
+            ./ build/gift-message-for-woo/
+
+      - name: Create plugin zip
+        run: |
+          cd build
+          zip -r gift-message-for-woo.zip gift-message-for-woo/
+          mv gift-message-for-woo.zip ../
+
+      - name: Upload release asset
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./gift-message-for-woo.zip
+          asset_name: gift-message-for-woo-${{ github.event.release.tag_name }}.zip
+          asset_content_type: application/zip
+
+      - name: WordPress Plugin Deploy
+        id: deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          generate-zip: false
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: gift-message-for-woo
+          VERSION: ${{ github.event.release.tag_name || github.event.inputs.version }}
+          BUILD_DIR: build/gift-message-for-woo
+          ASSETS_DIR: .wordpress-org

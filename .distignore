@@ -1,0 +1,64 @@
+# Development files
+.git
+.github
+.gitignore
+.gitattributes
+.editorconfig
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.stylelintrc
+.stylelintrc.json
+.phpcs.xml
+.phpcs.xml.dist
+
+# Build files
+build/
+dist/
+node_modules/
+vendor/composer/
+build.sh
+build.bat
+Gruntfile.js
+gulpfile.js
+webpack.config.js
+
+# Test files
+tests/
+phpunit.xml
+phpunit.xml.dist
+
+# Package files
+composer.json
+composer.lock
+package.json
+package-lock.json
+yarn.lock
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Documentation
+CLAUDE.md
+CONTRIBUTING.md
+CHANGELOG.md
+TODO.md
+DEPLOYMENT.md
+
+# Other files
+*.log
+*.lock
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak
+*.swp
+*~
+
+# WordPress.org doesn't need these
+.wordpress-org/
+assets-wp-repo/
