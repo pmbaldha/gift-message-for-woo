@@ -24,9 +24,6 @@
     <!-- Check for PHP compatibility -->
     <rule ref="PHPCompatibilityWP"/>
 
-    <!-- Set minimum supported PHP version -->
-    <config name="testVersion" value="7.4-"/>
-
     <!-- Only check PHP files -->
     <arg name="extensions" value="php"/>
 

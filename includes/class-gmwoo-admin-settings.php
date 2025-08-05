@@ -76,7 +76,7 @@ class GMWoo_Admin_Settings {
 	 */
 	public function get_settings() {
 		$settings = array(
-			'section_title' => array(
+			'section_title'       => array(
 				'name' => __( 'Gift Message Settings', 'gift-message-for-woo' ),
 				'type' => 'title',
 				'desc' => __( 'Configure how gift messages are displayed and which products can have gift messages.', 'gift-message-for-woo' ),
@@ -89,21 +89,21 @@ class GMWoo_Admin_Settings {
 				'id'      => 'gmwoo_enable_gift_message',
 				'default' => 'yes',
 			),
-			'gift_message_mode' => array(
+			'gift_message_mode'   => array(
 				'name'    => __( 'Gift Message Display Mode', 'gift-message-for-woo' ),
 				'type'    => 'select',
 				'desc'    => __( 'Choose how to enable gift messages for products', 'gift-message-for-woo' ),
 				'id'      => 'gmwoo_gift_message_mode',
 				'default' => 'all',
 				'options' => array(
-					'all'              => __( 'All Products', 'gift-message-for-woo' ),
-					'specific_products' => __( 'Specific Products Only', 'gift-message-for-woo' ),
+					'all'                 => __( 'All Products', 'gift-message-for-woo' ),
+					'specific_products'   => __( 'Specific Products Only', 'gift-message-for-woo' ),
 					'specific_categories' => __( 'Specific Categories Only', 'gift-message-for-woo' ),
-					'exclude_products' => __( 'All Products Except Specific Products', 'gift-message-for-woo' ),
-					'exclude_categories' => __( 'All Products Except Specific Categories', 'gift-message-for-woo' ),
+					'exclude_products'    => __( 'All Products Except Specific Products', 'gift-message-for-woo' ),
+					'exclude_categories'  => __( 'All Products Except Specific Categories', 'gift-message-for-woo' ),
 				),
 			),
-			'specific_products' => array(
+			'specific_products'   => array(
 				'name' => __( 'Select Products', 'gift-message-for-woo' ),
 				'type' => 'gmwoo_product_selector',
 				'desc' => __( 'Select products to enable/exclude gift messages', 'gift-message-for-woo' ),
@@ -115,7 +115,7 @@ class GMWoo_Admin_Settings {
 				'desc' => __( 'Select categories to enable/exclude gift messages', 'gift-message-for-woo' ),
 				'id'   => 'gmwoo_specific_categories',
 			),
-			'character_limit' => array(
+			'character_limit'     => array(
 				'name'              => __( 'Character Limit', 'gift-message-for-woo' ),
 				'type'              => 'number',
 				'desc'              => __( 'Maximum number of characters allowed in gift message', 'gift-message-for-woo' ),
@@ -127,21 +127,21 @@ class GMWoo_Admin_Settings {
 					'step' => 1,
 				),
 			),
-			'field_label' => array(
+			'field_label'         => array(
 				'name'    => __( 'Field Label', 'gift-message-for-woo' ),
 				'type'    => 'text',
 				'desc'    => __( 'Label text for the gift message field', 'gift-message-for-woo' ),
 				'id'      => 'gmwoo_field_label',
 				'default' => __( 'Gift Message (Optional)', 'gift-message-for-woo' ),
 			),
-			'field_placeholder' => array(
+			'field_placeholder'   => array(
 				'name'    => __( 'Field Placeholder', 'gift-message-for-woo' ),
 				'type'    => 'text',
 				'desc'    => __( 'Placeholder text for the gift message field', 'gift-message-for-woo' ),
 				'id'      => 'gmwoo_field_placeholder',
 				'default' => __( 'Enter your gift message here...', 'gift-message-for-woo' ),
 			),
-			'section_end' => array(
+			'section_end'         => array(
 				'type' => 'sectionend',
 				'id'   => 'gmwoo_section_end',
 			),
@@ -250,8 +250,8 @@ class GMWoo_Admin_Settings {
 		// Enqueue WooCommerce admin scripts for enhanced select.
 		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'woocommerce_admin_styles' );
-		
-		// Enqueue our custom admin script
+
+		// Enqueue our custom admin script.
 		wp_enqueue_script(
 			'gmwoo-admin',
 			GMWOO_PLUGIN_URL . 'assets/js/admin.js',
@@ -259,8 +259,8 @@ class GMWoo_Admin_Settings {
 			GMWOO_VERSION,
 			true
 		);
-		
-		// Enqueue our admin styles
+
+		// Enqueue our admin styles.
 		wp_enqueue_style(
 			'gmwoo-admin',
 			GMWOO_PLUGIN_URL . 'assets/css/admin.css',

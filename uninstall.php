@@ -25,10 +25,11 @@ delete_option( 'gmwoo_field_placeholder' );
 
 // Delete gift message meta from all orders (optional - commented out for safety).
 // Uncomment the following lines if you want to remove all gift message data on uninstall.
+
 /*
-global $wpdb;
-$wpdb->query( 
-	"DELETE FROM {$wpdb->prefix}woocommerce_order_itemmeta 
+Global $wpdb;
+$wpdb->query(
+	"DELETE FROM {$wpdb->prefix}woocommerce_order_itemmeta
 	WHERE meta_key = 'gmwoo_gift_message'"
 );
 */

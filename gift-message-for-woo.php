@@ -20,7 +20,6 @@
  * @package Gift_Message_For_Woo
  */
 
-
 // Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -32,13 +31,21 @@ define( 'GMWOO_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GMWOO_VERSION', '1.0.0' );
 define( 'GMWOO_PLUGIN_FILE', __FILE__ );
 
-// The code that runs during plugin activation.
+/**
+ * The code that runs during plugin activation.
+ *
+ * @since 1.0.0
+ */
 function gmwoo_activate() {
 	require_once GMWOO_PLUGIN_PATH . 'includes/class-gmwoo-activator.php';
 	GMWoo_Activator::activate();
 }
 
-// The code that runs during plugin deactivation.
+/**
+ * The code that runs during plugin deactivation.
+ *
+ * @since 1.0.0
+ */
 function gmwoo_deactivate() {
 	require_once GMWOO_PLUGIN_PATH . 'includes/class-gmwoo-deactivator.php';
 	GMWoo_Deactivator::deactivate();
@@ -61,7 +68,6 @@ if ( is_admin() ) {
  * @author     Prashant Baldha <pmbaldha@gmail.com>
  */
 class GMWoo_Gift_Message {
-
 
 	/**
 	 * Constructor.
@@ -94,15 +100,15 @@ class GMWoo_Gift_Message {
 		add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'display_gift_message_field' ) );
 		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_gift_message_to_cart' ) );
 		add_filter( 'woocommerce_get_item_data', array( $this, 'display_gift_message_in_cart' ), 10, 2 );
-		
+
 		// Product listing hooks.
 		add_action( 'woocommerce_after_shop_loop_item', array( $this, 'display_gift_message_field_on_listing' ), 15 );
-		
+
 		// AJAX hooks for product listings.
 		add_action( 'wp_ajax_gmwoo_add_to_cart_with_message', array( $this, 'ajax_add_to_cart_with_message' ) );
 		add_action( 'wp_ajax_nopriv_gmwoo_add_to_cart_with_message', array( $this, 'ajax_add_to_cart_with_message' ) );
-		
-		// Session-based approach for gift messages
+
+		// Session-based approach for gift messages.
 		add_action( 'wp_ajax_gmwoo_store_gift_message', array( $this, 'ajax_store_gift_message' ) );
 		add_action( 'wp_ajax_nopriv_gmwoo_store_gift_message', array( $this, 'ajax_store_gift_message' ) );
 		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_gift_message_from_session' ), 20, 3 );
@@ -116,19 +122,19 @@ class GMWoo_Gift_Message {
 
 		// Admin hooks - Support both legacy and HPOS.
 		$use_hpos = false;
-		
-		// Check if HPOS is enabled
-		if ( class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' ) 
+
+		// Check if HPOS is enabled.
+		if ( class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' )
 			&& method_exists( wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class ), 'custom_orders_table_usage_is_enabled' ) ) {
 			$use_hpos = wc_get_container()->get( \Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
 		}
-		
+
 		if ( $use_hpos ) {
-			// HPOS is enabled - use new hooks
+			// HPOS is enabled - use new hooks.
 			add_filter( 'manage_woocommerce_page_wc-orders_columns', array( $this, 'add_gift_message_column' ) );
 			add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'display_gift_message_column_hpos' ), 10, 2 );
 		} else {
-			// Legacy mode - use old hooks
+			// Legacy mode - use old hooks.
 			add_filter( 'manage_shop_order_posts_columns', array( $this, 'add_gift_message_column' ) );
 			add_action( 'manage_shop_order_posts_custom_column', array( $this, 'display_gift_message_column' ), 10, 2 );
 		}
@@ -139,15 +145,14 @@ class GMWoo_Gift_Message {
 		// Scripts and styles.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-		
-		// Add public nonce for AJAX
+
+		// Add public nonce for AJAX.
 		add_action( 'wp_head', array( $this, 'add_ajax_nonce' ) );
 		add_action( 'wp_footer', array( $this, 'add_ajax_nonce' ) );
 
 		// Custom hook for extensibility.
 		do_action( 'gmwoo_plugin_loaded' );
 	}
-
 
 	/**
 	 * Display gift message field on product page.
@@ -201,9 +206,9 @@ class GMWoo_Gift_Message {
 	 * @return array Modified cart item data.
 	 */
 	public function add_gift_message_to_cart( $cart_item_data, $product_id = 0, $variation_id = 0 ) {
-		// Check if gift message is in POST data (from single product page)
+		// Check if gift message is in POST data (from single product page).
 		if ( isset( $_POST['gmwoo_gift_message'] ) && ! empty( $_POST['gmwoo_gift_message'] ) ) {
-			// Verify nonce only for single product pages
+			// Verify nonce only for single product pages.
 			if ( isset( $_POST['gmwoo_gift_message_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gmwoo_gift_message_nonce'] ) ), 'gmwoo_add_gift_message' ) ) {
 				return $cart_item_data;
 			}
@@ -374,36 +379,36 @@ class GMWoo_Gift_Message {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		// Check if we should load assets on current page
+		// Check if we should load assets on current page.
 		$should_load = false;
 		
-		// Product pages and shop pages
+		// Product pages and shop pages.
 		if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
 			$should_load = true;
 		}
 		
-		// Cart and checkout pages
+		// Cart and checkout pages.
 		if ( is_cart() || is_checkout() ) {
 			$should_load = true;
 		}
 		
-		// Order received/thank you page
+		// Order received/thank you page.
 		if ( is_wc_endpoint_url( 'order-received' ) ) {
 			$should_load = true;
 		}
 		
-		// My account order view pages
+		// My account order view pages.
 		if ( is_account_page() && ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'orders' ) ) ) {
 			$should_load = true;
 		}
 		
-		// Order pay page
+		// Order pay page.
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$should_load = true;
 		}
 		
 		if ( $should_load ) {
-			// Only enqueue JS on pages that need it
+			// Only enqueue JS on pages that need it.
 			if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
 				wp_enqueue_script(
 					'gift-message-frontend',
@@ -413,19 +418,19 @@ class GMWoo_Gift_Message {
 					true
 				);
 				
-				// Localize script for AJAX
+				// Localize script for AJAX.
 				wp_localize_script(
 					'gift-message-frontend',
 					'gmwoo_ajax',
 					array(
-						'ajax_url' => admin_url( 'admin-ajax.php' ),
-						'nonce' => wp_create_nonce( 'gmwoo-add-to-cart' ),
-						'wc_nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
+						'ajax_url'  => admin_url( 'admin-ajax.php' ),
+						'nonce'     => wp_create_nonce( 'gmwoo-add-to-cart' ),
+						'wc_nonce'  => wp_create_nonce( 'woocommerce-add-to-cart' ),
 					)
 				);
 			}
 
-			// Always enqueue CSS on these pages
+			// Always enqueue CSS on these pages.
 			wp_enqueue_style(
 				'gift-message-frontend',
 				GMWOO_PLUGIN_URL . 'assets/css/frontend.css',
@@ -441,7 +446,7 @@ class GMWoo_Gift_Message {
 	 * @param string $hook The current admin page hook suffix.
 	 */
 	public function enqueue_admin_scripts( $hook ) {
-		// Legacy orders page
+		// Legacy orders page.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'shop_order' === $_GET['post_type'] ) {
 			wp_enqueue_style(
@@ -452,7 +457,7 @@ class GMWoo_Gift_Message {
 			);
 		}
 		
-		// HPOS orders page
+		// HPOS orders page.
 		if ( 'woocommerce_page_wc-orders' === $hook ) {
 			wp_enqueue_style(
 				'gift-message-admin',
@@ -575,23 +580,23 @@ class GMWoo_Gift_Message {
 	 * @since 1.0.0
 	 */
 	public function ajax_add_to_cart_with_message() {
-		// Verify nonce - check multiple nonces for compatibility
+		// Verify nonce - check multiple nonces for compatibility.
 		$nonce_valid = false;
 		if ( isset( $_POST['nonce'] ) ) {
 			$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
-			// Try our custom nonces
+			// Try our custom nonces.
 			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
 				$nonce_valid = true;
 			}
-			// Public nonce for non-logged-in users
+			// Public nonce for non-logged-in users.
 			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
 				$nonce_valid = true;
 			}
-			// Fallback to WooCommerce nonce
+			// Fallback to WooCommerce nonce.
 			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
 				$nonce_valid = true;
 			}
-			// Check for WooCommerce's wp_rest nonce
+			// Check for WooCommerce's wp_rest nonce.
 			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 				$nonce_valid = true;
 			}
@@ -609,7 +614,7 @@ class GMWoo_Gift_Message {
 			wp_send_json_error( __( 'Invalid product', 'gift-message-for-woo' ) );
 		}
 
-		// Get the product
+		// Get the product.
 		$product = wc_get_product( $product_id );
 		if ( ! $product ) {
 			wp_send_json_error( __( 'Product not found', 'gift-message-for-woo' ) );
@@ -630,7 +635,7 @@ class GMWoo_Gift_Message {
 			$cart_item_data['gmwoo_gift_message'] = $gift_message;
 		}
 
-		// Clear any previous notices
+		// Clear any previous notices.
 		wc_clear_notices();
 
 		$cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
@@ -642,13 +647,13 @@ class GMWoo_Gift_Message {
 				wc_add_to_cart_message( array( $product_id => $quantity ), true );
 			}
 
-			// Return fragments and success response
+			// Return fragments and success response.
 			$data = array(
-				'success' => true,
+				'success'    => true,
 				'product_id' => $product_id,
 			);
 			
-			// Get refreshed fragments
+			// Get refreshed fragments.
 			ob_start();
 			woocommerce_mini_cart();
 			$mini_cart = ob_get_clean();
@@ -678,23 +683,23 @@ class GMWoo_Gift_Message {
 	 * @since 1.0.0
 	 */
 	public function ajax_store_gift_message() {
-		// Verify nonce - check multiple nonces for compatibility
+		// Verify nonce - check multiple nonces for compatibility.
 		$nonce_valid = false;
 		if ( isset( $_POST['nonce'] ) ) {
 			$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
-			// Try our custom nonces
+			// Try our custom nonces.
 			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
 				$nonce_valid = true;
 			}
-			// Public nonce for non-logged-in users
+			// Public nonce for non-logged-in users.
 			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
 				$nonce_valid = true;
 			}
-			// Fallback to WooCommerce nonce
+			// Fallback to WooCommerce nonce.
 			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
 				$nonce_valid = true;
 			}
-			// Check for WooCommerce's wp_rest nonce
+			// Check for WooCommerce's wp_rest nonce.
 			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
 				$nonce_valid = true;
 			}
@@ -711,12 +716,12 @@ class GMWoo_Gift_Message {
 			wp_send_json_error( 'Invalid product ID' );
 		}
 		
-		// Start session if not started
+		// Start session if not started.
 		if ( ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
 		
-		// Store gift message in session
+		// Store gift message in session.
 		$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
 		if ( ! empty( $gift_message ) ) {
 			$gift_messages[ $product_id ] = $gift_message;
@@ -738,19 +743,19 @@ class GMWoo_Gift_Message {
 	 * @return array Modified cart item data.
 	 */
 	public function add_gift_message_from_session( $cart_item_data, $product_id, $variation_id ) {
-		// Skip if gift message already exists
+		// Skip if gift message already exists.
 		if ( isset( $cart_item_data['gmwoo_gift_message'] ) ) {
 			return $cart_item_data;
 		}
 		
-		// Check session for gift message
+		// Check session for gift message.
 		if ( WC()->session ) {
 			$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
 			
 			if ( isset( $gift_messages[ $product_id ] ) && ! empty( $gift_messages[ $product_id ] ) ) {
 				$cart_item_data['gmwoo_gift_message'] = $gift_messages[ $product_id ];
 				
-				// Remove from session after use
+				// Remove from session after use.
 				unset( $gift_messages[ $product_id ] );
 				WC()->session->set( 'gmwoo_gift_messages', $gift_messages );
 			}
@@ -765,20 +770,20 @@ class GMWoo_Gift_Message {
 	 * @since 1.0.0
 	 */
 	public function add_ajax_nonce() {
-		// Check if we should add nonce
+		// Check if we should add nonce.
 		$should_add_nonce = false;
 		
-		// Product and shop pages
+		// Product and shop pages.
 		if ( ! is_admin() && ( is_shop() || is_product_category() || is_product_tag() || is_product() ) ) {
 			$should_add_nonce = true;
 		}
 		
-		// Cart and checkout pages
+		// Cart and checkout pages.
 		if ( is_cart() || is_checkout() ) {
 			$should_add_nonce = true;
 		}
 		
-		// Order pages
+		// Order pages.
 		if ( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-pay' ) ) {
 			$should_add_nonce = true;
 		}
