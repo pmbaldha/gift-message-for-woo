@@ -1,9 +1,0 @@
-Placeholder for Screenshot 1: Gift message field on single product page with character counter
-
-This screenshot should show:
-- WooCommerce single product page
-- Gift message textarea field below add to cart button
-- Character counter showing remaining characters (e.g., "23/150 characters")
-- Clean, professional styling
-
-Recommended dimensions: 1280x800px or 772x418px

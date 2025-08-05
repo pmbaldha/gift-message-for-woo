@@ -6,6 +6,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Gift Message for Woo is a WordPress plugin that adds gift message functionality to WooCommerce stores. The plugin allows customers to add personalized gift messages to products during purchase, which are then displayed throughout the order process (cart, checkout, order details, and emails).
 
+## Build Commands
+
+```bash
+# Create WordPress.org compliant zip file (recommended)
+php build.php
+
+# Alternative build commands
+./build.sh    # Unix/Linux/Mac
+build.bat     # Windows
+```
+
+The build process creates a distribution-ready zip in `dist/gift-message-for-woo-{version}.zip`.
+
+## Testing & Quality Assurance
+
+```bash
+# Run WordPress Coding Standards check (via GitHub Actions)
+# Locally, you would need to install PHPCS and WPCS:
+phpcs --standard=WordPress --extensions=php --ignore=vendor/,node_modules/,tests/ .
+
+# The plugin is tested on PHP 7.4, 8.0, 8.1, and 8.2 via GitHub Actions
+```
+
 ## Architecture
 
 ### Core Components
@@ -47,44 +70,65 @@ Gift Message for Woo is a WordPress plugin that adds gift message functionality 
 - `woocommerce_checkout_create_order_line_item`: Save message to order
 - `woocommerce_get_item_data`: Display message in cart/checkout
 
-## Common Development Tasks
+## Development Environment
 
-### Testing Gift Message on Product Listings
-1. Navigate to shop page or product category
-2. Click "Add Gift Message" link on a product
-3. Enter message in textarea
-4. Click "Add to Cart"
-5. Check cart page for gift message display
+This is a Local by Flywheel WordPress installation on Windows:
+- Working directory: `C:\Users\pmbal\Local Sites\gift-message-for-woo`
+- Plugin location: `app\public\wp-content\plugins\gift-message-for-woo`
+- Local development URL varies based on Local configuration
 
-### Debugging AJAX Issues
-- Check browser console for JavaScript errors
-- Verify `gmwoo_ajax` object is defined in console
-- Check Network tab for AJAX requests to `admin-ajax.php`
-- Enable WordPress debug mode to see PHP error logs
+## Deployment
 
-### Modifying Character Limit
-The default 150-character limit is set in multiple places:
-- PHP: `get_option('gmwoo_character_limit', '150')`
-- JS: `parseInt($textarea.attr('maxlength')) || 150`
-- HTML: `maxlength` attribute on textareas
-
-## Known Issues
-
-1. **Gift messages not being added from product listings** - The AJAX add-to-cart functionality needs investigation
-2. **Variable product support** - Currently only works with simple products
-3. **HPOS Compatibility** - Plugin includes HPOS support but may need testing
+The plugin uses GitHub Actions for automated deployment to WordPress.org:
+- `.github/workflows/test.yml`: Runs tests on push/PR
+- `.github/workflows/wordpress-deploy.yml`: Deploys to WordPress.org on tag
+- `.github/workflows/wordpress-assets.yml`: Updates WordPress.org assets
 
 ## Plugin Constants
 
 - `GMWOO_PLUGIN_URL`: Plugin directory URL
 - `GMWOO_PLUGIN_PATH`: Plugin directory path
-- `GMWOO_VERSION`: Current plugin version
+- `GMWOO_VERSION`: Current plugin version (1.0.0)
 - `GMWOO_PLUGIN_FILE`: Main plugin file path
 
-## Helper Functions
+## Database Schema
 
-- `gmwoo_get_gift_message_from_order_item($item)`: Get gift message from order item
-- `gmwoo_has_gift_message($item)`: Check if order item has gift message
+Gift messages are stored as:
+- **Cart**: Session data via WooCommerce cart item data
+- **Orders**: Order item meta with key `_gift_message`
+- **Settings**: WordPress options table with prefix `gmwoo_`
+
+## Key Classes & Files
+
+- `GMWoo_Gift_Message`: Main plugin class handling all functionality
+- `GMWoo_Admin_Settings`: WooCommerce settings integration
+- `GMWoo_Activator`: Plugin activation hooks
+- `GMWoo_Deactivator`: Plugin deactivation hooks
+- `includes/helper.php`: Helper functions for gift messages
+
+## AJAX Endpoints
+
+- Action: `gmwoo_add_to_cart`
+- Nonce: `gmwoo_nonce`
+- Parameters: `product_id`, `quantity`, `gift_message`
+
+## Known Issues
+
+1. **Gift messages not being added from product listings** - The AJAX add-to-cart functionality needs investigation
+2. **Variable product support** - Currently only works with simple products
+3. **HPOS Compatibility** - Plugin declares HPOS support but may need testing
+
+## Common Debugging
+
+```bash
+# Enable WordPress debug mode in wp-config.php
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
+define( 'WP_DEBUG_DISPLAY', false );
+
+# Check debug log
+tail -f app/public/wp-content/debug.log
+```
 
 ## Filters for Customization
 

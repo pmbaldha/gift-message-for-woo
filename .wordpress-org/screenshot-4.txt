@@ -1,9 +1,0 @@
-Placeholder for Screenshot 4: Admin orders list with gift message column
-
-This screenshot should show:
-- WooCommerce orders admin page
-- Custom "Gift Message" column in orders table
-- Gift icon or indicator for orders with messages
-- Truncated message preview on hover
-
-Recommended dimensions: 1280x800px or 772x418px
