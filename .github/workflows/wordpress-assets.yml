@@ -3,7 +3,6 @@ name: Update WordPress.org Assets
 on:
   push:
     branches:
-      - main
       - master
     paths:
       - '.wordpress-org/**'
