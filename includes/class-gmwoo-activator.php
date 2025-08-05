@@ -1,8 +1,14 @@
 <?php
 /**
- * Fired during plugin activation
+ * Fired during plugin activation.
  *
- * @package Gift Message for Woo
+ * This file defines the GMWoo_Activator class which contains
+ * all code necessary to run during the plugin's activation.
+ *
+ * @link              https://prashantwp.com/
+ * @since             1.0.0
+ * @package           Gift_Message_For_Woo
+ * @subpackage        Gift_Message_For_Woo/includes
  */
 
 // Prevent direct access.
@@ -14,6 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Fired during plugin activation.
  *
  * This class defines all code necessary to run during the plugin's activation.
+ *
+ * @since      1.0.0
+ * @package    Gift_Message_For_Woo
+ * @subpackage Gift_Message_For_Woo/includes
+ * @author     Prashant Baldha <pmbaldha@gmail.com>
  */
 class GMWoo_Activator {
 
@@ -21,6 +32,8 @@ class GMWoo_Activator {
 	 * Run on plugin activation.
 	 *
 	 * Set default options and flush rewrite rules.
+	 *
+	 * @since 1.0.0
 	 */
 	public static function activate() {
 		// Set default options if they don't exist.
@@ -29,8 +42,5 @@ class GMWoo_Activator {
 		add_option( 'gmwoo_character_limit', '150' );
 		add_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
 		add_option( 'gmwoo_field_placeholder', __( 'Enter your gift message here...', 'gift-message-for-woo' ) );
-
-		// Clear the permalinks after the plugin has been activated.
-		flush_rewrite_rules();
 	}
 }

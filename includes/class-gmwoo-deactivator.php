@@ -1,8 +1,14 @@
 <?php
 /**
- * Fired during plugin deactivation
+ * Fired during plugin deactivation.
  *
- * @package Gift Message for Woo
+ * This file defines the GMWoo_Deactivator class which contains
+ * all code necessary to run during the plugin's deactivation.
+ *
+ * @link              https://prashantwp.com/
+ * @since             1.0.0
+ * @package           Gift_Message_For_Woo
+ * @subpackage        Gift_Message_For_Woo/includes
  */
 
 // Prevent direct access.
@@ -14,6 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Fired during plugin deactivation.
  *
  * This class defines all code necessary to run during the plugin's deactivation.
+ *
+ * @since      1.0.0
+ * @package    Gift_Message_For_Woo
+ * @subpackage Gift_Message_For_Woo/includes
+ * @author     Prashant Baldha <pmbaldha@gmail.com>
  */
 class GMWoo_Deactivator {
 
@@ -21,9 +32,9 @@ class GMWoo_Deactivator {
 	 * Run on plugin deactivation.
 	 *
 	 * Flush rewrite rules.
+	 *
+	 * @since 1.0.0
 	 */
 	public static function deactivate() {
-		// Clear the permalinks to remove our post type's rules from the database.
-		flush_rewrite_rules();
 	}
 }

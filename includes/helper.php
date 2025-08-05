@@ -1,15 +1,26 @@
 <?php
 /**
- * Helper methods
+ * Helper functions for Gift Message for Woo plugin
  *
- * @package Gift Message for Woo
+ * This file contains utility functions that can be used throughout
+ * the plugin and by third-party developers.
+ *
+ * @link              https://prashantwp.com/
+ * @since             1.0.0
+ * @package           Gift_Message_For_Woo
+ * @subpackage        Gift_Message_For_Woo/includes
  */
 
+// Prevent direct access.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Utility function to get gift message from order item
+ * Utility function to get gift message from order item.
  *
- * @param WC_Order_Item|object $item The order item object.
- *
+ * @since 1.0.0
+ * @param WC_Order_Item_Product $item The order item object.
  * @return string|null The gift message if set, otherwise null.
  */
 function gmwoo_get_gift_message_from_order_item( $item ) {
@@ -17,10 +28,10 @@ function gmwoo_get_gift_message_from_order_item( $item ) {
 }
 
 /**
- * Helper function for other plugins to check if item has gift message
+ * Helper function for other plugins to check if item has gift message.
  *
- * @param WC_Order_Item|object $item The order item object.
- *
+ * @since 1.0.0
+ * @param WC_Order_Item_Product $item The order item object.
  * @return bool True if a gift message exists, false otherwise.
  */
 function gmwoo_has_gift_message( $item ) {

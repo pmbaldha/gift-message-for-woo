@@ -1,10 +1,12 @@
 <?php
 /**
- * Uninstall Gift Message for Woo
+ * Uninstall Gift Message for Woo.
  *
  * Deletes all plugin data when the plugin is deleted.
  *
- * @package Gift Message for Woo
+ * @link              https://prashantwp.com/
+ * @since             1.0.0
+ * @package           Gift_Message_For_Woo
  */
 
 // If uninstall not called from WordPress, then exit.

@@ -16,7 +16,9 @@
  *
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
- **/
+ *
+ * @package Gift_Message_For_Woo
+ */
 
 
 // Prevent direct access.
@@ -52,20 +54,28 @@ if ( is_admin() ) {
 	require_once GMWOO_PLUGIN_PATH . 'includes/class-gmwoo-admin-settings.php';
 }
 /**
- * Main Gift Message Plugin Class
+ * Main Gift Message Plugin Class.
+ *
+ * @since      1.0.0
+ * @package    Gift_Message_For_Woo
+ * @author     Prashant Baldha <pmbaldha@gmail.com>
  */
 class GMWoo_Gift_Message {
 
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		add_action( 'woocommerce_init', array( $this, 'init' ) );
 	}
 
 	/**
-	 * Initialize the plugin
+	 * Initialize the plugin.
+	 *
+	 * @since 1.0.0
 	 */
 	public function init() {
 		// Check if WooCommerce is active.
@@ -141,6 +151,8 @@ class GMWoo_Gift_Message {
 
 	/**
 	 * Display gift message field on product page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function display_gift_message_field() {
 		global $product;
@@ -180,11 +192,13 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Add gift message to cart item data
+	 * Add gift message to cart item data.
 	 *
-	 * @param array $cart_item_data extra cart item data we want to pass into the item.
+	 * @since 1.0.0
+	 * @param array $cart_item_data Extra cart item data we want to pass into the item.
 	 * @param int   $product_id     Product ID.
 	 * @param int   $variation_id   Variation ID.
+	 * @return array Modified cart item data.
 	 */
 	public function add_gift_message_to_cart( $cart_item_data, $product_id = 0, $variation_id = 0 ) {
 		// Check if gift message is in POST data (from single product page)
@@ -262,9 +276,11 @@ class GMWoo_Gift_Message {
 
 
 	/**
-	 * Display gift message in email
+	 * Display gift message in email.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Order item args.
+	 * @return array Modified args.
 	 */
 	public function display_gift_message_in_email( $args ) {
 		$args['show_purchase_note'] = true;
@@ -272,9 +288,11 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Add gift message column to orders admin
+	 * Add gift message column to orders admin.
 	 *
+	 * @since 1.0.0
 	 * @param array $columns Product columns.
+	 * @return array Modified columns.
 	 */
 	public function add_gift_message_column( $columns ) {
 		$new_columns = array();
@@ -291,9 +309,10 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Display gift message column content (Legacy orders)
+	 * Display gift message column content (Legacy orders).
 	 *
-	 * @param string $column Column name.
+	 * @since 1.0.0
+	 * @param string $column  Column name.
 	 * @param int    $post_id Product id.
 	 */
 	public function display_gift_message_column( $column, $post_id ) {
@@ -309,10 +328,11 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Display gift message column content (HPOS)
+	 * Display gift message column content (HPOS).
 	 *
+	 * @since 1.0.0
 	 * @param string   $column Column name.
-	 * @param WC_Order $order Order object.
+	 * @param WC_Order $order  Order object.
 	 */
 	public function display_gift_message_column_hpos( $column, $order ) {
 		if ( 'gmwoo_gift_message' === $column ) {
@@ -325,8 +345,9 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Render gift message column content
+	 * Render gift message column content.
 	 *
+	 * @since 1.0.0
 	 * @param WC_Order $order Order object.
 	 */
 	private function render_gift_message_column( $order ) {
@@ -348,7 +369,9 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * Enqueue frontend scripts and styles
+	 * Enqueue frontend scripts and styles.
+	 *
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		// Check if we should load assets on current page
@@ -441,7 +464,9 @@ class GMWoo_Gift_Message {
 	}
 
 	/**
-	 * WooCommerce missing notice
+	 * WooCommerce missing notice.
+	 *
+	 * @since 1.0.0
 	 */
 	public function woocommerce_missing_notice() {
 		echo '<div class="error"><p><strong>' .
@@ -501,6 +526,8 @@ class GMWoo_Gift_Message {
 
 	/**
 	 * Display gift message field on product listings (shop/category pages).
+	 *
+	 * @since 1.0.0
 	 */
 	public function display_gift_message_field_on_listing() {
 		global $product;
@@ -544,6 +571,8 @@ class GMWoo_Gift_Message {
 
 	/**
 	 * AJAX handler for adding products to cart with gift message from listings.
+	 *
+	 * @since 1.0.0
 	 */
 	public function ajax_add_to_cart_with_message() {
 		// Verify nonce - check multiple nonces for compatibility
@@ -645,6 +674,8 @@ class GMWoo_Gift_Message {
 
 	/**
 	 * AJAX handler to store gift message in session.
+	 *
+	 * @since 1.0.0
 	 */
 	public function ajax_store_gift_message() {
 		// Verify nonce - check multiple nonces for compatibility
@@ -700,10 +731,11 @@ class GMWoo_Gift_Message {
 	/**
 	 * Add gift message from session when product is added to cart.
 	 *
+	 * @since 1.0.0
 	 * @param array $cart_item_data Cart item data.
 	 * @param int   $product_id     Product ID.
 	 * @param int   $variation_id   Variation ID.
-	 * @return array
+	 * @return array Modified cart item data.
 	 */
 	public function add_gift_message_from_session( $cart_item_data, $product_id, $variation_id ) {
 		// Skip if gift message already exists
@@ -728,7 +760,9 @@ class GMWoo_Gift_Message {
 	}
 	
 	/**
-	 * Add AJAX nonce to page
+	 * Add AJAX nonce to page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function add_ajax_nonce() {
 		// Check if we should add nonce
@@ -772,9 +806,12 @@ add_action(
 	}
 );
 
-// Declare HPOS compatibility
-add_action( 'before_woocommerce_init', function() {
-	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
-		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+// Declare HPOS compatibility.
+add_action(
+	'before_woocommerce_init',
+	function () {
+		if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		}
 	}
-} );
+);

@@ -1,8 +1,14 @@
 <?php
 /**
- * Admin Settings Class for Gift Message for Woo
+ * Admin Settings Class for Gift Message for Woo.
  *
- * @package Gift Message for Woo
+ * This file contains the GMWoo_Admin_Settings class which handles
+ * all WooCommerce settings tab functionality for the plugin.
+ *
+ * @link              https://prashantwp.com/
+ * @since             1.0.0
+ * @package           Gift_Message_For_Woo
+ * @subpackage        Gift_Message_For_Woo/includes
  */
 
 // Prevent direct access.
@@ -11,12 +17,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * GMWoo Admin Settings Class
+ * GMWoo Admin Settings Class.
+ *
+ * @since      1.0.0
+ * @package    Gift_Message_For_Woo
+ * @subpackage Gift_Message_For_Woo/includes
+ * @author     Prashant Baldha <pmbaldha@gmail.com>
  */
 class GMWoo_Admin_Settings {
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_tab' ), 50 );
@@ -40,6 +53,8 @@ class GMWoo_Admin_Settings {
 
 	/**
 	 * Uses the WooCommerce admin fields API to output settings via the @see woocommerce_admin_fields() function.
+	 *
+	 * @since 1.0.0
 	 */
 	public function settings_tab() {
 		woocommerce_admin_fields( $this->get_settings() );
@@ -47,6 +62,8 @@ class GMWoo_Admin_Settings {
 
 	/**
 	 * Uses the WooCommerce options API to save settings via the @see woocommerce_update_options() function.
+	 *
+	 * @since 1.0.0
 	 */
 	public function update_settings() {
 		woocommerce_update_options( $this->get_settings() );
@@ -133,8 +150,9 @@ class GMWoo_Admin_Settings {
 	}
 
 	/**
-	 * Custom product selector field
+	 * Custom product selector field.
 	 *
+	 * @since 1.0.0
 	 * @param array $value Field value array.
 	 */
 	public function product_selector_field( $value ) {
@@ -169,8 +187,9 @@ class GMWoo_Admin_Settings {
 	}
 
 	/**
-	 * Custom category selector field
+	 * Custom category selector field.
 	 *
+	 * @since 1.0.0
 	 * @param array $value Field value array.
 	 */
 	public function category_selector_field( $value ) {
@@ -212,8 +231,9 @@ class GMWoo_Admin_Settings {
 	}
 
 	/**
-	 * Enqueue admin scripts for the settings page
+	 * Enqueue admin scripts for the settings page.
 	 *
+	 * @since 1.0.0
 	 * @param string $hook Current admin page hook.
 	 */
 	public function enqueue_admin_scripts( $hook ) {
