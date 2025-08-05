@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle with Gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9B6FD3;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#7F54B3;stop-opacity:0.2" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="128" cy="128" r="120" fill="url(#bgGradient)"/>
+  
+  <!-- Gift Box Base with Shadow -->
+  <rect x="64" y="104" width="128" height="96" rx="8" fill="#7F54B3" filter="url(#shadow)"/>
+  
+  <!-- Gift Box Lid -->
+  <rect x="56" y="88" width="144" height="24" rx="4" fill="#9B6FD3" filter="url(#shadow)"/>
+  
+  <!-- Ribbon Vertical with Gradient -->
+  <defs>
+    <linearGradient id="ribbonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFD700" />
+      <stop offset="50%" style="stop-color:#FFC700" />
+      <stop offset="100%" style="stop-color:#FFD700" />
+    </linearGradient>
+  </defs>
+  <rect x="116" y="88" width="24" height="112" fill="url(#ribbonGradient)"/>
+  
+  <!-- Ribbon Horizontal -->
+  <rect x="56" y="96" width="144" height="16" fill="url(#ribbonGradient)"/>
+  
+  <!-- Ribbon Bow Left -->
+  <ellipse cx="108" cy="84" rx="24" ry="16" fill="#FFD700" transform="rotate(-15 108 84)"/>
+  
+  <!-- Ribbon Bow Right -->
+  <ellipse cx="148" cy="84" rx="24" ry="16" fill="#FFD700" transform="rotate(15 148 84)"/>
+  
+  <!-- Ribbon Bow Center -->
+  <circle cx="128" cy="84" r="12" fill="#FFC700"/>
+  
+  <!-- Message Tag with Details -->
+  <g transform="translate(150, 130)">
+    <!-- Tag Shadow -->
+    <path d="M2 2 L62 2 L62 42 L12 42 L2 32 Z" fill="black" opacity="0.1"/>
+    <!-- Tag Shape -->
+    <path d="M0 0 L60 0 L60 40 L10 40 L0 30 Z" fill="white"/>
+    <path d="M0 0 L60 0 L60 40 L10 40 L0 30 Z" fill="none" stroke="#7F54B3" stroke-width="3"/>
+    <!-- Tag Hole -->
+    <circle cx="12" cy="20" r="4" fill="none" stroke="#7F54B3" stroke-width="2"/>
+    <!-- Message Lines -->
+    <line x1="20" y1="14" x2="50" y2="14" stroke="#7F54B3" stroke-width="3" stroke-linecap="round"/>
+    <line x1="20" y1="26" x2="44" y2="26" stroke="#7F54B3" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Decorative Hearts -->
+  <g opacity="0.4">
+    <path d="M40 60 C40 54, 34 50, 30 50 C26 50, 22 54, 22 60 C22 54, 18 50, 14 50 C10 50, 4 54, 4 60 Q4 70, 22 80 Q40 70, 40 60 Z" fill="#FF69B4"/>
+    <path d="M220 176 C220 170, 214 166, 210 166 C206 166, 202 170, 202 176 C202 170, 198 166, 194 166 C190 166, 184 170, 184 176 Q184 186, 202 196 Q220 186, 220 176 Z" fill="#FF69B4"/>
+    <path d="M236 40 C236 34, 230 30, 226 30 C222 30, 218 34, 218 40 C218 34, 214 30, 210 30 C206 30, 200 34, 200 40 Q200 50, 218 60 Q236 50, 236 40 Z" fill="#FF69B4"/>
+  </g>
+  
+  <!-- Sparkles -->
+  <g opacity="0.6">
+    <circle cx="50" cy="100" r="2" fill="#FFD700"/>
+    <circle cx="206" cy="140" r="2" fill="#FFD700"/>
+    <circle cx="180" cy="60" r="2" fill="#FFD700"/>
+    <circle cx="70" cy="180" r="2" fill="#FFD700"/>
+  </g>
+</svg>
