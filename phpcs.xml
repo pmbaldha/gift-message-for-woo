@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<ruleset name="Gift Message for Woo">
+	<description>WordPress Coding Standards for Gift Message for Woo plugin</description>
+
+	<!-- Check all PHP files in directory tree by default. -->
+	<arg name="extensions" value="php"/>
+	<file>.</file>
+
+	<!-- Show progress and colours -->
+	<arg value="p"/>
+	<arg value="s"/>
+	<arg name="colors"/>
+
+	<!-- Ignore certain files and directories -->
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/dist/*</exclude-pattern>
+	<exclude-pattern>build.php</exclude-pattern>
+
+	<!-- Include the WordPress standards -->
+	<rule ref="WordPress">
+		<!-- Allow mixed function and class declarations in main plugin file -->
+		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed"/>
+		<!-- Allow non-standard class file naming for main plugin file -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<!-- Allow commented out code in uninstall.php for documentation -->
+		<exclude name="Squiz.PHP.CommentedOutCode.Found"/>
+	</rule>
+
+	<!-- Check for PHP 7.4+ compatibility -->
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Set minimum WordPress version -->
+	<config name="minimum_supported_wp_version" value="6.6"/>
+</ruleset>
