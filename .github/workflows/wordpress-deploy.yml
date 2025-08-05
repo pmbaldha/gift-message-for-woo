@@ -107,14 +107,10 @@ jobs:
 
       - name: Upload release asset
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./gift-message-for-woo.zip
-          asset_name: gift-message-for-woo-${{ github.event.release.tag_name }}.zip
-          asset_content_type: application/zip
+          files: ./gift-message-for-woo.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: WordPress Plugin Deploy
         id: deploy
