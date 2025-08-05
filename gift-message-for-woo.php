@@ -199,6 +199,7 @@ class GMWoo_Gift_Message {
 
 			$character_limit = get_option( 'gmwoo_character_limit', '150' );
 			if ( strlen( $gift_message ) > $character_limit ) {
+				/* translators: %s: character limit number */
 				wc_add_notice( sprintf( __( 'Gift message must be %s characters or less.', 'gift-message-for-woo' ), $character_limit ), 'error' );
 				return $cart_item_data;
 			}
@@ -418,6 +419,7 @@ class GMWoo_Gift_Message {
 	 */
 	public function enqueue_admin_scripts( $hook ) {
 		// Legacy orders page
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'shop_order' === $_GET['post_type'] ) {
 			wp_enqueue_style(
 				'gift-message-admin',
@@ -588,6 +590,7 @@ class GMWoo_Gift_Message {
 		if ( ! empty( $gift_message ) ) {
 			$character_limit = get_option( 'gmwoo_character_limit', '150' );
 			if ( strlen( $gift_message ) > $character_limit ) {
+				/* translators: %s: character limit number */
 				wp_send_json_error( sprintf( __( 'Gift message must be %s characters or less.', 'gift-message-for-woo' ), $character_limit ) );
 			}
 		}
