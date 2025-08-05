@@ -200,6 +200,11 @@
     margin-top: 10px;
 }
 
+strong.wc-item-meta-label {
+    height: 100%;
+    vertical-align: top;
+}
+
 /* Responsive styles for listings */
 @media (max-width: 768px) {
     .gmwoo-gift-message-listing-wrapper {

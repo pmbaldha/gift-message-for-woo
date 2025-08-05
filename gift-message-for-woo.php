@@ -350,31 +350,63 @@ class GMWoo_Gift_Message {
 	 * Enqueue frontend scripts and styles
 	 */
 	public function enqueue_scripts() {
+		// Check if we should load assets on current page
+		$should_load = false;
+		
+		// Product pages and shop pages
 		if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
-			wp_enqueue_script(
-				'gift-message-frontend',
-				GMWOO_PLUGIN_URL . 'assets/js/frontend.js',
-				array( 'jquery', 'wc-add-to-cart' ),
-				GMWOO_VERSION,
-				true
-			);
+			$should_load = true;
+		}
+		
+		// Cart and checkout pages
+		if ( is_cart() || is_checkout() ) {
+			$should_load = true;
+		}
+		
+		// Order received/thank you page
+		if ( is_wc_endpoint_url( 'order-received' ) ) {
+			$should_load = true;
+		}
+		
+		// My account order view pages
+		if ( is_account_page() && ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'orders' ) ) ) {
+			$should_load = true;
+		}
+		
+		// Order pay page
+		if ( is_wc_endpoint_url( 'order-pay' ) ) {
+			$should_load = true;
+		}
+		
+		if ( $should_load ) {
+			// Only enqueue JS on pages that need it
+			if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
+				wp_enqueue_script(
+					'gift-message-frontend',
+					GMWOO_PLUGIN_URL . 'assets/js/frontend.js',
+					array( 'jquery', 'wc-add-to-cart' ),
+					GMWOO_VERSION,
+					true
+				);
+				
+				// Localize script for AJAX
+				wp_localize_script(
+					'gift-message-frontend',
+					'gmwoo_ajax',
+					array(
+						'ajax_url' => admin_url( 'admin-ajax.php' ),
+						'nonce' => wp_create_nonce( 'gmwoo-add-to-cart' ),
+						'wc_nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
+					)
+				);
+			}
 
+			// Always enqueue CSS on these pages
 			wp_enqueue_style(
 				'gift-message-frontend',
 				GMWOO_PLUGIN_URL . 'assets/css/frontend.css',
 				array(),
 				GMWOO_VERSION
-			);
-			
-			// Localize script for AJAX
-			wp_localize_script(
-				'gift-message-frontend',
-				'gmwoo_ajax',
-				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce' => wp_create_nonce( 'gmwoo-add-to-cart' ),
-					'wc_nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
-				)
 			);
 		}
 	}
@@ -696,7 +728,25 @@ class GMWoo_Gift_Message {
 	 * Add AJAX nonce to page
 	 */
 	public function add_ajax_nonce() {
+		// Check if we should add nonce
+		$should_add_nonce = false;
+		
+		// Product and shop pages
 		if ( ! is_admin() && ( is_shop() || is_product_category() || is_product_tag() || is_product() ) ) {
+			$should_add_nonce = true;
+		}
+		
+		// Cart and checkout pages
+		if ( is_cart() || is_checkout() ) {
+			$should_add_nonce = true;
+		}
+		
+		// Order pages
+		if ( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-pay' ) ) {
+			$should_add_nonce = true;
+		}
+		
+		if ( $should_add_nonce ) {
 			?>
 			<script type="text/javascript">
 			/* <![CDATA[ */
