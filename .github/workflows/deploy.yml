@@ -12,8 +12,8 @@ jobs:
       
       - name: Build
         run: |
-          npm install
-          npm run build
+          # Skip NPM operations as there are no dependencies or build process
+          echo "No build process required for this plugin"
           
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
