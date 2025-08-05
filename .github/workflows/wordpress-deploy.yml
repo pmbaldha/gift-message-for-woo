@@ -53,13 +53,23 @@ jobs:
       - name: Install NPM dependencies
         run: |
           if [ -f "package.json" ]; then
-            npm ci --no-audit --no-fund
+            # Check if package.json has dependencies
+            if [ $(jq '.dependencies | length' package.json) -gt 0 ] || [ $(jq '.devDependencies | length' package.json) -gt 0 ]; then
+              npm ci --no-audit --no-fund
+            else
+              echo "No NPM dependencies to install"
+            fi
           fi
 
       - name: Build assets
         run: |
           if [ -f "package.json" ]; then
-            npm run build || echo "No build script found"
+            # Check if build script exists
+            if npm run | grep -q "build"; then
+              npm run build
+            else
+              echo "No build script found, skipping build step"
+            fi
           fi
 
       - name: Create build artifact
