@@ -111,3 +111,102 @@
     color: #333333;
     font-weight: 600;
 }
+
+/* Product listing gift message styles */
+.gmwoo-gift-message-listing-wrapper {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    clear: both;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.gmwoo-gift-message-toggle {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.gmwoo-add-gift-message-link {
+    display: inline-block;
+    font-size: 13px;
+    color: #0073aa;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #0073aa;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.gmwoo-add-gift-message-link:hover {
+    background-color: #0073aa;
+    color: #fff;
+    text-decoration: none;
+}
+
+.gmwoo-add-gift-message-link.active {
+    background-color: #f8f9fa;
+    color: #666;
+    border-color: #ddd;
+}
+
+.gmwoo-gift-message-fields {
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #e3e4e6;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.gmwoo-gift-message-textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    resize: vertical;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+    margin: 0;
+    display: block;
+    font-family: inherit;
+    background-color: #fff;
+}
+
+.gmwoo-gift-message-textarea:focus {
+    outline: none;
+    border-color: #0073aa;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+.gmwoo-gift-message-listing-wrapper .gmwoo-gift-message-counter {
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 11px;
+    color: #666;
+    text-align: right;
+    display: block;
+}
+
+.gmwoo-gift-message-listing-wrapper .gmwoo-gift-message-counter.warning {
+    color: #d63638;
+    font-weight: 600;
+}
+
+/* Override WooCommerce button styles for listings */
+.products .product .gmwoo-gift-message-listing-wrapper + .button {
+    margin-top: 10px;
+}
+
+/* Responsive styles for listings */
+@media (max-width: 768px) {
+    .gmwoo-gift-message-listing-wrapper {
+        margin-top: 8px;
+    }
+    
+    .gmwoo-gift-message-textarea {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}

@@ -84,6 +84,18 @@ class GMWoo_Gift_Message {
 		add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'display_gift_message_field' ) );
 		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_gift_message_to_cart' ) );
 		add_filter( 'woocommerce_get_item_data', array( $this, 'display_gift_message_in_cart' ), 10, 2 );
+		
+		// Product listing hooks.
+		add_action( 'woocommerce_after_shop_loop_item', array( $this, 'display_gift_message_field_on_listing' ), 15 );
+		
+		// AJAX hooks for product listings.
+		add_action( 'wp_ajax_gmwoo_add_to_cart_with_message', array( $this, 'ajax_add_to_cart_with_message' ) );
+		add_action( 'wp_ajax_nopriv_gmwoo_add_to_cart_with_message', array( $this, 'ajax_add_to_cart_with_message' ) );
+		
+		// Session-based approach for gift messages
+		add_action( 'wp_ajax_gmwoo_store_gift_message', array( $this, 'ajax_store_gift_message' ) );
+		add_action( 'wp_ajax_nopriv_gmwoo_store_gift_message', array( $this, 'ajax_store_gift_message' ) );
+		add_filter( 'woocommerce_add_cart_item_data', array( $this, 'add_gift_message_from_session' ), 20, 3 );
 
 		// Checkout hooks.
 		add_action( 'woocommerce_checkout_create_order_line_item', array( $this, 'save_gift_message_to_order' ), 10, 4 );
@@ -167,11 +179,14 @@ class GMWoo_Gift_Message {
 	 * Add gift message to cart item data
 	 *
 	 * @param array $cart_item_data extra cart item data we want to pass into the item.
+	 * @param int   $product_id     Product ID.
+	 * @param int   $variation_id   Variation ID.
 	 */
-	public function add_gift_message_to_cart( $cart_item_data ) {
+	public function add_gift_message_to_cart( $cart_item_data, $product_id = 0, $variation_id = 0 ) {
+		// Check if gift message is in POST data (from single product page)
 		if ( isset( $_POST['gmwoo_gift_message'] ) && ! empty( $_POST['gmwoo_gift_message'] ) ) {
-			// Verify nonce.
-			if ( ! isset( $_POST['gmwoo_gift_message_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gmwoo_gift_message_nonce'] ) ), 'gmwoo_add_gift_message' ) ) {
+			// Verify nonce only for single product pages
+			if ( isset( $_POST['gmwoo_gift_message_nonce'] ) && ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['gmwoo_gift_message_nonce'] ) ), 'gmwoo_add_gift_message' ) ) {
 				return $cart_item_data;
 			}
 
@@ -331,11 +346,11 @@ class GMWoo_Gift_Message {
 	 * Enqueue frontend scripts and styles
 	 */
 	public function enqueue_scripts() {
-		if ( is_product() ) {
+		if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
 			wp_enqueue_script(
 				'gift-message-frontend',
 				GMWOO_PLUGIN_URL . 'assets/js/frontend.js',
-				array( 'jquery' ),
+				array( 'jquery', 'wc-add-to-cart' ),
 				GMWOO_VERSION,
 				true
 			);
@@ -345,6 +360,16 @@ class GMWoo_Gift_Message {
 				GMWOO_PLUGIN_URL . 'assets/css/frontend.css',
 				array(),
 				GMWOO_VERSION
+			);
+			
+			// Localize script for AJAX
+			wp_localize_script(
+				'gift-message-frontend',
+				'gmwoo_ajax',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+					'nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
+				)
 			);
 		}
 	}
@@ -433,6 +458,191 @@ class GMWoo_Gift_Message {
 		$settings_link = '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=gift_message' ) . '">' . __( 'Settings', 'gift-message-for-woo' ) . '</a>';
 		array_unshift( $links, $settings_link );
 		return $links;
+	}
+
+	/**
+	 * Display gift message field on product listings (shop/category pages).
+	 */
+	public function display_gift_message_field_on_listing() {
+		global $product;
+
+		if ( ! $product || ! $product->is_type( 'simple' ) || ! $product->is_purchasable() || ! $product->is_in_stock() ) {
+			return;
+		}
+
+		// Check if gift messages are enabled.
+		if ( 'yes' !== get_option( 'gmwoo_enable_gift_message', 'yes' ) ) {
+			return;
+		}
+
+		// Check product/category restrictions.
+		if ( ! $this->is_gift_message_allowed_for_product( $product ) ) {
+			return;
+		}
+
+		// Apply filter for field visibility.
+		$show_field = apply_filters( 'gmwoo_gift_message_show_field_listing', true, $product );
+
+		if ( ! $show_field ) {
+			return;
+		}
+
+		// Get settings.
+		$character_limit = get_option( 'gmwoo_character_limit', '150' );
+		$field_label     = get_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
+		$field_placeholder = get_option( 'gmwoo_field_placeholder', __( 'Enter your gift message here...', 'gift-message-for-woo' ) );
+
+		echo '<div class="gmwoo-gift-message-listing-wrapper" data-product-id="' . esc_attr( $product->get_id() ) . '">';
+		echo '<div class="gmwoo-gift-message-toggle">';
+		echo '<a href="#" class="gmwoo-add-gift-message-link">' . esc_html__( 'Add Gift Message', 'gift-message-for-woo' ) . '</a>';
+		echo '</div>';
+		echo '<div class="gmwoo-gift-message-fields" style="display: none;">';
+		echo '<textarea class="gmwoo-gift-message-textarea" maxlength="' . esc_attr( $character_limit ) . '" placeholder="' . esc_attr( $field_placeholder ) . '"></textarea>';
+		echo '<div class="gmwoo-gift-message-counter"><span class="gmwoo-gift-message-count">0</span>/' . esc_html( $character_limit ) . ' ' . esc_html__( 'characters', 'gift-message-for-woo' ) . '</div>';
+		echo '</div>';
+		echo '</div>';
+	}
+
+	/**
+	 * AJAX handler for adding products to cart with gift message from listings.
+	 */
+	public function ajax_add_to_cart_with_message() {
+		// Verify nonce.
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'woocommerce-add-to-cart' ) ) {
+			wp_send_json_error( __( 'Security check failed', 'gift-message-for-woo' ) );
+		}
+
+		$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		$quantity = isset( $_POST['quantity'] ) ? absint( $_POST['quantity'] ) : 1;
+		$gift_message = isset( $_POST['gift_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['gift_message'] ) ) : '';
+
+		if ( ! $product_id ) {
+			wp_send_json_error( __( 'Invalid product', 'gift-message-for-woo' ) );
+		}
+
+		// Get the product
+		$product = wc_get_product( $product_id );
+		if ( ! $product ) {
+			wp_send_json_error( __( 'Product not found', 'gift-message-for-woo' ) );
+		}
+
+		// Validate character limit.
+		if ( ! empty( $gift_message ) ) {
+			$character_limit = get_option( 'gmwoo_character_limit', '150' );
+			if ( strlen( $gift_message ) > $character_limit ) {
+				wp_send_json_error( sprintf( __( 'Gift message must be %s characters or less.', 'gift-message-for-woo' ), $character_limit ) );
+			}
+		}
+
+		// Add to cart with gift message.
+		$cart_item_data = array();
+		if ( ! empty( $gift_message ) ) {
+			$cart_item_data['gmwoo_gift_message'] = $gift_message;
+		}
+
+		// Clear any previous notices
+		wc_clear_notices();
+
+		$cart_item_key = WC()->cart->add_to_cart( $product_id, $quantity, 0, array(), $cart_item_data );
+
+		if ( $cart_item_key ) {
+			do_action( 'woocommerce_ajax_added_to_cart', $product_id );
+
+			if ( 'yes' === get_option( 'woocommerce_cart_redirect_after_add' ) ) {
+				wc_add_to_cart_message( array( $product_id => $quantity ), true );
+			}
+
+			// Return fragments and success response
+			$data = array(
+				'success' => true,
+				'product_id' => $product_id,
+			);
+			
+			// Get refreshed fragments
+			ob_start();
+			woocommerce_mini_cart();
+			$mini_cart = ob_get_clean();
+			
+			$data['fragments'] = apply_filters( 'woocommerce_add_to_cart_fragments', array(
+				'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+			) );
+			
+			$data['cart_hash'] = WC()->cart->get_cart_hash();
+			
+			wp_send_json( $data );
+		} else {
+			$error_message = wc_get_notices( 'error' );
+			wc_clear_notices();
+			
+			if ( ! empty( $error_message ) ) {
+				wp_send_json_error( wp_strip_all_tags( $error_message[0]['notice'] ) );
+			} else {
+				wp_send_json_error( __( 'Unable to add product to cart', 'gift-message-for-woo' ) );
+			}
+		}
+	}
+
+	/**
+	 * AJAX handler to store gift message in session.
+	 */
+	public function ajax_store_gift_message() {
+		// Verify nonce
+		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'woocommerce-add-to-cart' ) ) {
+			wp_send_json_error( 'Security check failed' );
+		}
+		
+		$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		$gift_message = isset( $_POST['gift_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['gift_message'] ) ) : '';
+		
+		if ( ! $product_id ) {
+			wp_send_json_error( 'Invalid product ID' );
+		}
+		
+		// Start session if not started
+		if ( ! WC()->session->has_session() ) {
+			WC()->session->set_customer_session_cookie( true );
+		}
+		
+		// Store gift message in session
+		$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
+		if ( ! empty( $gift_message ) ) {
+			$gift_messages[ $product_id ] = $gift_message;
+		} else {
+			unset( $gift_messages[ $product_id ] );
+		}
+		WC()->session->set( 'gmwoo_gift_messages', $gift_messages );
+		
+		wp_send_json_success( array( 'message' => 'Gift message stored' ) );
+	}
+	
+	/**
+	 * Add gift message from session when product is added to cart.
+	 *
+	 * @param array $cart_item_data Cart item data.
+	 * @param int   $product_id     Product ID.
+	 * @param int   $variation_id   Variation ID.
+	 * @return array
+	 */
+	public function add_gift_message_from_session( $cart_item_data, $product_id, $variation_id ) {
+		// Skip if gift message already exists
+		if ( isset( $cart_item_data['gmwoo_gift_message'] ) ) {
+			return $cart_item_data;
+		}
+		
+		// Check session for gift message
+		if ( WC()->session ) {
+			$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
+			
+			if ( isset( $gift_messages[ $product_id ] ) && ! empty( $gift_messages[ $product_id ] ) ) {
+				$cart_item_data['gmwoo_gift_message'] = $gift_messages[ $product_id ];
+				
+				// Remove from session after use
+				unset( $gift_messages[ $product_id ] );
+				WC()->session->set( 'gmwoo_gift_messages', $gift_messages );
+			}
+		}
+		
+		return $cart_item_data;
 	}
 }
 
