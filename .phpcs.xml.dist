@@ -11,6 +11,7 @@
     <exclude-pattern>*/tests/*</exclude-pattern>
     <exclude-pattern>*/dist/*</exclude-pattern>
     <exclude-pattern>*/build/*</exclude-pattern>
+    <exclude-pattern>build.php</exclude-pattern>
     <exclude-pattern>*.min.js</exclude-pattern>
     <exclude-pattern>*.min.css</exclude-pattern>
 
