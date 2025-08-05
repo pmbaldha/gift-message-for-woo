@@ -1,0 +1,20 @@
+{
+  "name": "gift-message-for-woo",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/pmbaldha/gift-message-for-woo#readme",
+  "bugs": {
+    "url": "https://github.com/pmbaldha/gift-message-for-woo/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmbaldha/gift-message-for-woo.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
