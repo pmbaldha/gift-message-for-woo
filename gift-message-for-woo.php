@@ -20,6 +20,8 @@
  * @package Gift_Message_For_Woo
  */
 
+// phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+
 // Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -62,6 +64,9 @@ if ( is_admin() ) {
 }
 /**
  * Main Gift Message Plugin Class.
+ *
+ * Handles all gift message functionality for WooCommerce products including
+ * displaying fields, processing data, and integrating with cart/checkout/orders.
  *
  * @since      1.0.0
  * @package    Gift_Message_For_Woo
@@ -184,8 +189,8 @@ class GMWoo_Gift_Message {
 		}
 
 		// Get settings.
-		$character_limit = get_option( 'gmwoo_character_limit', '150' );
-		$field_label     = get_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
+		$character_limit   = get_option( 'gmwoo_character_limit', '150' );
+		$field_label       = get_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
 		$field_placeholder = get_option( 'gmwoo_field_placeholder', __( 'Enter your gift message here...', 'gift-message-for-woo' ) );
 
 		echo '<div class="gmwoo-gift-message-wrapper">';
@@ -205,7 +210,7 @@ class GMWoo_Gift_Message {
 	 * @param int   $variation_id   Variation ID.
 	 * @return array Modified cart item data.
 	 */
-	public function add_gift_message_to_cart( $cart_item_data, $product_id = 0, $variation_id = 0 ) {
+	public function add_gift_message_to_cart( $cart_item_data, $product_id = 0, $variation_id = 0 ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		// Check if gift message is in POST data (from single product page).
 		if ( isset( $_POST['gmwoo_gift_message'] ) && ! empty( $_POST['gmwoo_gift_message'] ) ) {
 			// Verify nonce only for single product pages.
@@ -381,32 +386,32 @@ class GMWoo_Gift_Message {
 	public function enqueue_scripts() {
 		// Check if we should load assets on current page.
 		$should_load = false;
-		
+
 		// Product pages and shop pages.
 		if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
 			$should_load = true;
 		}
-		
+
 		// Cart and checkout pages.
 		if ( is_cart() || is_checkout() ) {
 			$should_load = true;
 		}
-		
+
 		// Order received/thank you page.
 		if ( is_wc_endpoint_url( 'order-received' ) ) {
 			$should_load = true;
 		}
-		
+
 		// My account order view pages.
 		if ( is_account_page() && ( is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'orders' ) ) ) {
 			$should_load = true;
 		}
-		
+
 		// Order pay page.
 		if ( is_wc_endpoint_url( 'order-pay' ) ) {
 			$should_load = true;
 		}
-		
+
 		if ( $should_load ) {
 			// Only enqueue JS on pages that need it.
 			if ( is_product() || is_shop() || is_product_category() || is_product_tag() ) {
@@ -417,15 +422,15 @@ class GMWoo_Gift_Message {
 					GMWOO_VERSION,
 					true
 				);
-				
+
 				// Localize script for AJAX.
 				wp_localize_script(
 					'gift-message-frontend',
 					'gmwoo_ajax',
 					array(
-						'ajax_url'  => admin_url( 'admin-ajax.php' ),
-						'nonce'     => wp_create_nonce( 'gmwoo-add-to-cart' ),
-						'wc_nonce'  => wp_create_nonce( 'woocommerce-add-to-cart' ),
+						'ajax_url' => admin_url( 'admin-ajax.php' ),
+						'nonce'    => wp_create_nonce( 'gmwoo-add-to-cart' ),
+						'wc_nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
 					)
 				);
 			}
@@ -456,7 +461,7 @@ class GMWoo_Gift_Message {
 				GMWOO_VERSION
 			);
 		}
-		
+
 		// HPOS orders page.
 		if ( 'woocommerce_page_wc-orders' === $hook ) {
 			wp_enqueue_style(
@@ -559,8 +564,8 @@ class GMWoo_Gift_Message {
 		}
 
 		// Get settings.
-		$character_limit = get_option( 'gmwoo_character_limit', '150' );
-		$field_label     = get_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
+		$character_limit   = get_option( 'gmwoo_character_limit', '150' );
+		$field_label       = get_option( 'gmwoo_field_label', __( 'Gift Message (Optional)', 'gift-message-for-woo' ) );
 		$field_placeholder = get_option( 'gmwoo_field_placeholder', __( 'Enter your gift message here...', 'gift-message-for-woo' ) );
 
 		echo '<div class="gmwoo-gift-message-listing-wrapper" data-product-id="' . esc_attr( $product->get_id() ) . '">';
@@ -587,27 +592,24 @@ class GMWoo_Gift_Message {
 			// Try our custom nonces.
 			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
 				$nonce_valid = true;
-			}
-			// Public nonce for non-logged-in users.
-			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+				// Public nonce for non-logged-in users.
 				$nonce_valid = true;
-			}
-			// Fallback to WooCommerce nonce.
-			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+				// Fallback to WooCommerce nonce.
 				$nonce_valid = true;
-			}
-			// Check for WooCommerce's wp_rest nonce.
-			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				// Check for WooCommerce's wp_rest nonce.
 				$nonce_valid = true;
 			}
 		}
-		
+
 		if ( ! $nonce_valid ) {
 			wp_send_json_error( __( 'Security check failed', 'gift-message-for-woo' ) );
 		}
 
-		$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
-		$quantity = isset( $_POST['quantity'] ) ? absint( $_POST['quantity'] ) : 1;
+		$product_id   = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+		$quantity     = isset( $_POST['quantity'] ) ? absint( $_POST['quantity'] ) : 1;
 		$gift_message = isset( $_POST['gift_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['gift_message'] ) ) : '';
 
 		if ( ! $product_id ) {
@@ -652,23 +654,26 @@ class GMWoo_Gift_Message {
 				'success'    => true,
 				'product_id' => $product_id,
 			);
-			
+
 			// Get refreshed fragments.
 			ob_start();
 			woocommerce_mini_cart();
 			$mini_cart = ob_get_clean();
-			
-			$data['fragments'] = apply_filters( 'woocommerce_add_to_cart_fragments', array(
-				'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
-			) );
-			
+
+			$data['fragments'] = apply_filters(
+				'woocommerce_add_to_cart_fragments',
+				array(
+					'div.widget_shopping_cart_content' => '<div class="widget_shopping_cart_content">' . $mini_cart . '</div>',
+				)
+			);
+
 			$data['cart_hash'] = WC()->cart->get_cart_hash();
-			
+
 			wp_send_json( $data );
 		} else {
 			$error_message = wc_get_notices( 'error' );
 			wc_clear_notices();
-			
+
 			if ( ! empty( $error_message ) ) {
 				wp_send_json_error( wp_strip_all_tags( $error_message[0]['notice'] ) );
 			} else {
@@ -690,37 +695,34 @@ class GMWoo_Gift_Message {
 			// Try our custom nonces.
 			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
 				$nonce_valid = true;
-			}
-			// Public nonce for non-logged-in users.
-			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+				// Public nonce for non-logged-in users.
 				$nonce_valid = true;
-			}
-			// Fallback to WooCommerce nonce.
-			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+				// Fallback to WooCommerce nonce.
 				$nonce_valid = true;
-			}
-			// Check for WooCommerce's wp_rest nonce.
-			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+			} elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				// Check for WooCommerce's wp_rest nonce.
 				$nonce_valid = true;
 			}
 		}
-		
+
 		if ( ! $nonce_valid ) {
 			wp_send_json_error( 'Security check failed' );
 		}
-		
-		$product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
+
+		$product_id   = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
 		$gift_message = isset( $_POST['gift_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['gift_message'] ) ) : '';
-		
+
 		if ( ! $product_id ) {
 			wp_send_json_error( 'Invalid product ID' );
 		}
-		
+
 		// Start session if not started.
 		if ( ! WC()->session->has_session() ) {
 			WC()->session->set_customer_session_cookie( true );
 		}
-		
+
 		// Store gift message in session.
 		$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
 		if ( ! empty( $gift_message ) ) {
@@ -729,10 +731,10 @@ class GMWoo_Gift_Message {
 			unset( $gift_messages[ $product_id ] );
 		}
 		WC()->session->set( 'gmwoo_gift_messages', $gift_messages );
-		
+
 		wp_send_json_success( array( 'message' => 'Gift message stored' ) );
 	}
-	
+
 	/**
 	 * Add gift message from session when product is added to cart.
 	 *
@@ -742,28 +744,28 @@ class GMWoo_Gift_Message {
 	 * @param int   $variation_id   Variation ID.
 	 * @return array Modified cart item data.
 	 */
-	public function add_gift_message_from_session( $cart_item_data, $product_id, $variation_id ) {
+	public function add_gift_message_from_session( $cart_item_data, $product_id, $variation_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed
 		// Skip if gift message already exists.
 		if ( isset( $cart_item_data['gmwoo_gift_message'] ) ) {
 			return $cart_item_data;
 		}
-		
+
 		// Check session for gift message.
 		if ( WC()->session ) {
 			$gift_messages = WC()->session->get( 'gmwoo_gift_messages', array() );
-			
+
 			if ( isset( $gift_messages[ $product_id ] ) && ! empty( $gift_messages[ $product_id ] ) ) {
 				$cart_item_data['gmwoo_gift_message'] = $gift_messages[ $product_id ];
-				
+
 				// Remove from session after use.
 				unset( $gift_messages[ $product_id ] );
 				WC()->session->set( 'gmwoo_gift_messages', $gift_messages );
 			}
 		}
-		
+
 		return $cart_item_data;
 	}
-	
+
 	/**
 	 * Add AJAX nonce to page.
 	 *
@@ -772,22 +774,22 @@ class GMWoo_Gift_Message {
 	public function add_ajax_nonce() {
 		// Check if we should add nonce.
 		$should_add_nonce = false;
-		
+
 		// Product and shop pages.
 		if ( ! is_admin() && ( is_shop() || is_product_category() || is_product_tag() || is_product() ) ) {
 			$should_add_nonce = true;
 		}
-		
+
 		// Cart and checkout pages.
 		if ( is_cart() || is_checkout() ) {
 			$should_add_nonce = true;
 		}
-		
+
 		// Order pages.
 		if ( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'view-order' ) || is_wc_endpoint_url( 'order-pay' ) ) {
 			$should_add_nonce = true;
 		}
-		
+
 		if ( $should_add_nonce ) {
 			?>
 			<script type="text/javascript">

@@ -26,6 +26,8 @@ delete_option( 'gmwoo_field_placeholder' );
 // Delete gift message meta from all orders (optional - commented out for safety).
 // Uncomment the following lines if you want to remove all gift message data on uninstall.
 
+// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+
 /*
 Global $wpdb;
 $wpdb->query(
