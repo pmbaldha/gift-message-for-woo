@@ -42,19 +42,11 @@ jobs:
           coverage: none
           tools: composer, cs2pr
 
-      - name: Install PHP_CodeSniffer
-        run: |
-          composer global require "squizlabs/php_codesniffer=*"
-          composer global require "wp-coding-standards/wpcs"
-          composer global require "phpcompatibility/phpcompatibility-wp"
-
-      - name: Configure PHPCS
-        run: |
-          phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs,$HOME/.composer/vendor/phpcompatibility/php-compatibility,$HOME/.composer/vendor/phpcompatibility/phpcompatibility-paragonie,$HOME/.composer/vendor/phpcompatibility/phpcompatibility-wp
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
 
       - name: Run PHPCS
-        run: |
-          phpcs --standard=WordPress --extensions=php --ignore=vendor/,node_modules/,tests/ . || true
+        run: composer phpcs
 
   plugin-check:
     name: Plugin Check

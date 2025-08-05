@@ -135,14 +135,15 @@ Yes, the plugin includes a real-time JavaScript character counter with visual fe
 1. Admin Dashboard settings for Gift Message.
 2. Gift message field on single product page with character counter.
 3. Gift message field on Products listing.
-4. Gift message display in sidebar cart with item details.
+4. Gift message display in the sidebar cart with item details.
 5. Gift message display in the cart page with item details.
 6. Checkout page showing gift messages for multiple items.
 7. Order received page showing gift messages for multiple items.
 8. Admin orders list with gift message column.
 9. Gift message display in admin order details.
-10. Gift message display in order email sent to store owner (merchent).
+10. Gift message display in order email sent to store owner (merchant).
 11. Gift message display in order email sent to customer.
+
 
 
 == Changelog ==
