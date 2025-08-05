@@ -50,26 +50,43 @@ jobs:
           fi
 
 
-      - name: Install NPM dependencies
+      - name: Check for NPM dependencies
+        id: check-npm
         run: |
           if [ -f "package.json" ]; then
-            # Check if package.json has dependencies
-            if [ $(jq '.dependencies | length' package.json) -gt 0 ] || [ $(jq '.devDependencies | length' package.json) -gt 0 ]; then
-              npm ci --no-audit --no-fund
+            # Check if package-lock.json exists
+            if [ -f "package-lock.json" ]; then
+              echo "has_lock=true" >> $GITHUB_OUTPUT
+              # Check if there are dependencies
+              if [ $(jq '.dependencies // {} | length' package.json) -gt 0 ] || [ $(jq '.devDependencies // {} | length' package.json) -gt 0 ]; then
+                echo "has_deps=true" >> $GITHUB_OUTPUT
+              else
+                echo "has_deps=false" >> $GITHUB_OUTPUT
+              fi
             else
-              echo "No NPM dependencies to install"
+              echo "has_lock=false" >> $GITHUB_OUTPUT
+              echo "has_deps=false" >> $GITHUB_OUTPUT
             fi
+          else
+            echo "has_lock=false" >> $GITHUB_OUTPUT
+            echo "has_deps=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Install NPM dependencies
+        if: steps.check-npm.outputs.has_lock == 'true' && steps.check-npm.outputs.has_deps == 'true'
+        run: npm ci --no-audit --no-fund
 
       - name: Build assets
         run: |
           if [ -f "package.json" ]; then
             # Check if build script exists
-            if npm run | grep -q "build"; then
+            if npm run 2>/dev/null | grep -q "build"; then
               npm run build
             else
               echo "No build script found, skipping build step"
             fi
+          else
+            echo "No package.json found, skipping build step"
           fi
 
       - name: Create build artifact
