@@ -118,7 +118,7 @@
                         action: 'gmwoo_store_gift_message',
                         product_id: productId,
                         gift_message: giftMessage,
-                        nonce: gmwoo_ajax.nonce
+                        nonce: getAjaxNonce()
                     },
                     success: function(response) {
                         console.log('Gift message stored in session for product ' + productId);
@@ -164,7 +164,7 @@
                             product_id: productId,
                             quantity: quantity,
                             gift_message: giftMessage,
-                            nonce: gmwoo_ajax.nonce
+                            nonce: getAjaxNonce()
                         },
                         success: function(response) {
                             console.log('AJAX Response:', response);
@@ -245,12 +245,55 @@
                             action: 'gmwoo_store_gift_message',
                             product_id: productId,
                             gift_message: giftMessage,
-                            nonce: gmwoo_ajax.nonce
+                            nonce: getAjaxNonce()
                         }
                     });
                 }
             }
         }
+    });
+
+    /**
+     * Get the appropriate nonce for AJAX requests
+     */
+    function getAjaxNonce() {
+        // For public/non-logged in users, use public nonce if available
+        if (typeof gmwoo_public_ajax !== 'undefined' && gmwoo_public_ajax.nonce) {
+            return gmwoo_public_ajax.nonce;
+        }
+        
+        // Try to get WooCommerce's nonce from the page if it exists
+        var wcNonce = null;
+        
+        // Check for WooCommerce add to cart nonce in various places
+        var $nonceInput = $('input[name="woocommerce-add-to-cart-nonce"]');
+        if ($nonceInput.length) {
+            wcNonce = $nonceInput.val();
+        }
+        
+        // Check for _wpnonce in add to cart forms
+        var $wpNonce = $('.add_to_cart_button').first().closest('form').find('input[name="_wpnonce"]');
+        if ($wpNonce.length) {
+            wcNonce = $wpNonce.val();
+        }
+        
+        // Check in wc_add_to_cart_params if available
+        if (!wcNonce && typeof wc_add_to_cart_params !== 'undefined' && wc_add_to_cart_params.wc_ajax_url) {
+            // Extract nonce from URL if present
+            var matches = wc_add_to_cart_params.wc_ajax_url.match(/wc-ajax-nonce=([^&]+)/);
+            if (matches && matches[1]) {
+                wcNonce = matches[1];
+            }
+        }
+        
+        // Return WC nonce if found, otherwise use our custom nonce
+        return wcNonce || gmwoo_ajax.nonce;
+    }
+    
+    // Override the nonce in AJAX calls
+    $(document).ready(function() {
+        // Update nonce in gmwoo_ajax object
+        gmwoo_ajax.dynamic_nonce = getAjaxNonce();
     });
 
 })(jQuery);

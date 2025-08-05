@@ -129,6 +129,10 @@ class GMWoo_Gift_Message {
 		// Scripts and styles.
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+		
+		// Add public nonce for AJAX
+		add_action( 'wp_head', array( $this, 'add_ajax_nonce' ) );
+		add_action( 'wp_footer', array( $this, 'add_ajax_nonce' ) );
 
 		// Custom hook for extensibility.
 		do_action( 'gmwoo_plugin_loaded' );
@@ -368,7 +372,8 @@ class GMWoo_Gift_Message {
 				'gmwoo_ajax',
 				array(
 					'ajax_url' => admin_url( 'admin-ajax.php' ),
-					'nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
+					'nonce' => wp_create_nonce( 'gmwoo-add-to-cart' ),
+					'wc_nonce' => wp_create_nonce( 'woocommerce-add-to-cart' ),
 				)
 			);
 		}
@@ -507,8 +512,29 @@ class GMWoo_Gift_Message {
 	 * AJAX handler for adding products to cart with gift message from listings.
 	 */
 	public function ajax_add_to_cart_with_message() {
-		// Verify nonce.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'woocommerce-add-to-cart' ) ) {
+		// Verify nonce - check multiple nonces for compatibility
+		$nonce_valid = false;
+		if ( isset( $_POST['nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
+			// Try our custom nonces
+			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
+				$nonce_valid = true;
+			}
+			// Public nonce for non-logged-in users
+			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+				$nonce_valid = true;
+			}
+			// Fallback to WooCommerce nonce
+			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+				$nonce_valid = true;
+			}
+			// Check for WooCommerce's wp_rest nonce
+			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				$nonce_valid = true;
+			}
+		}
+		
+		if ( ! $nonce_valid ) {
 			wp_send_json_error( __( 'Security check failed', 'gift-message-for-woo' ) );
 		}
 
@@ -586,8 +612,29 @@ class GMWoo_Gift_Message {
 	 * AJAX handler to store gift message in session.
 	 */
 	public function ajax_store_gift_message() {
-		// Verify nonce
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'woocommerce-add-to-cart' ) ) {
+		// Verify nonce - check multiple nonces for compatibility
+		$nonce_valid = false;
+		if ( isset( $_POST['nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ) );
+			// Try our custom nonces
+			if ( wp_verify_nonce( $nonce, 'gmwoo-add-to-cart' ) ) {
+				$nonce_valid = true;
+			}
+			// Public nonce for non-logged-in users
+			elseif ( wp_verify_nonce( $nonce, 'gmwoo-public-nonce' ) ) {
+				$nonce_valid = true;
+			}
+			// Fallback to WooCommerce nonce
+			elseif ( wp_verify_nonce( $nonce, 'woocommerce-add-to-cart' ) ) {
+				$nonce_valid = true;
+			}
+			// Check for WooCommerce's wp_rest nonce
+			elseif ( wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+				$nonce_valid = true;
+			}
+		}
+		
+		if ( ! $nonce_valid ) {
 			wp_send_json_error( 'Security check failed' );
 		}
 		
@@ -643,6 +690,23 @@ class GMWoo_Gift_Message {
 		}
 		
 		return $cart_item_data;
+	}
+	
+	/**
+	 * Add AJAX nonce to page
+	 */
+	public function add_ajax_nonce() {
+		if ( ! is_admin() && ( is_shop() || is_product_category() || is_product_tag() || is_product() ) ) {
+			?>
+			<script type="text/javascript">
+			/* <![CDATA[ */
+			var gmwoo_public_ajax = {
+				'nonce': '<?php echo esc_js( wp_create_nonce( 'gmwoo-public-nonce' ) ); ?>'
+			};
+			/* ]]> */
+			</script>
+			<?php
+		}
 	}
 }
 
