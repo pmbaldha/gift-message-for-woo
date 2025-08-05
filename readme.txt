@@ -1,5 +1,5 @@
 === Gift Message for Woo ===
-Contributors: pmbaldha
+Contributors: pmbaldha, woocommerce9
 Tags: woocommerce, gift, gift-message, ecommerce, checkout
 Requires at least: 6.6
 Tested up to: 6.8
@@ -59,20 +59,6 @@ Built with modern web standards featuring:
 
 All user inputs are properly sanitized and validated. Output is escaped for XSS prevention. The plugin follows WordPress and WooCommerce security best practices.
 
-**Developer Extensibility:**
-
-```php
-// Control field visibility per product
-add_filter('gift_message_show_field', function($show, $product) {
-    return !has_term('no-gifts', 'product_cat', $product->get_id());
-}, 10, 2);
-
-// Custom initialization
-add_action('gift_message_plugin_loaded', function() {
-    // Your custom code here
-});
-```
-
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/gift-message-for-woo/` directory
@@ -114,10 +100,6 @@ The default limit is 150 characters globally, but you can use the provided hooks
 
 Yes, the plugin is designed to work seamlessly with WooCommerce Blocks and modern checkout flows.
 
-= Can I export gift messages for analysis? =
-
-Yes, the plugin includes export functionality supporting multiple formats for reporting and analytics through the admin dashboard.
-
 = Does this work with caching plugins? =
 
 Yes, the plugin is designed to work with popular caching solutions. Gift messages are stored in cart sessions and order meta.
@@ -143,8 +125,6 @@ Yes, the plugin includes a real-time JavaScript character counter with visual fe
 9. Gift message display in admin order details.
 10. Gift message display in order email sent to store owner (merchant).
 11. Gift message display in order email sent to customer.
-
-
 
 == Changelog ==
 
@@ -177,11 +157,8 @@ Initial release with complete gift message functionality, admin dashboard, analy
 
 **Gift Message Management:**
 
-* Dedicated admin dashboard for gift message overview
-* Bulk operations for managing multiple messages
-* Export functionality in CSV and XLSX formats
-* Analytics and reporting for gift message trends
-* Customer history tracking for repeat gift senders
+* Enable for specific products or categories.
+* Exclude specific products or categories.
 
 **Integration Points:**
 
@@ -189,22 +166,6 @@ Initial release with complete gift message functionality, admin dashboard, analy
 * Order details page with full message display
 * Email template integration for notifications
 * Product settings for message field customization
-
-**Developer Resources:**
-
-```php
-// Control field visibility per product
-add_filter('gift_message_show_field', function($show, $product) {
-    return !has_term('no-gifts', 'product_cat', $product->get_id());
-}, 10, 2);
-
-// Custom initialization
-add_action('gift_message_plugin_loaded', function() {
-    // Your custom code here
-});
-```
-
-For complete documentation, visit: https://prashantwp.com/docs/gift-message-for-woo/
 
 == Support ==
 
@@ -221,11 +182,3 @@ This plugin stores gift messages as part of WooCommerce order data. Gift message
 * Data retention follows your WooCommerce settings
 * No external services are contacted
 * No tracking or analytics data is collected by this plugin
-
-== Development ==
-
-This plugin is actively developed on GitHub. Contributions, bug reports, and feature requests are welcome:
-
-* Repository: https://github.com/prashantwp/gift-message-for-woo
-* Roadmap: https://github.com/prashantwp/gift-message-for-woo/projects
-* Contributing: https://github.com/prashantwp/gift-message-for-woo/blob/main/CONTRIBUTING.md
